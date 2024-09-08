@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.model';
-import { v4 as uuidv4 } from 'uuid'; // For generating unique user ids
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User) // Inject the repository for the User entity
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-  createUser(firstName: string, lastName: string, email: string): User {
-    const newUser = new User(
-      uuidv4(), // Generate a unique id for the user
-      firstName,
-      lastName,
-      email,
-    );
-    this.users.push(newUser);
-    return newUser;
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const { firstName, lastName, email } = createUserDto;
+    const newUser = this.userRepository.create({ firstName, lastName, email });
+    return await this.userRepository.save(newUser);
   }
 
-  getUsers(): User[] {
-    return this.users;
+  async getUsers(): Promise<User[]> {
+    return await this.userRepository.find(); // Get all users
   }
 }

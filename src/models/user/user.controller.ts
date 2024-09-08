@@ -1,5 +1,6 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from './user.dto';
 
 @Controller('user')
 export class UserController {
@@ -8,19 +9,14 @@ export class UserController {
 
   // POST FOR REGISTER A USER
   @Post('register')
-  registerUser(
-    @Body('firstName') firstName: string,
-    @Body('lastName') lastName: string,
-    @Body('email') email: string,
-  ): any {
-    const newUser = this.userService.createUser(firstName, lastName, email);
-    return { message: 'User registered successfully!', user: newUser };
+  async registerUser(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
   }
-  // FETCH ALL THE USER REGISTERED
+  // FETCH ALL THE REGISTERED USER 
   @Get()
-  getUsers(): any {
+  async getUsers(): Promise<any> {
     const users = this.userService.getUsers();
-    return users.length > 0 ? users : { message: 'No users found' };
+    return (await users).length > 0 ? users : { message: 'No users found' };
   }
 
 }
