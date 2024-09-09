@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './user.dto';
 
@@ -15,8 +15,11 @@ export class UserController {
   // FETCH ALL THE REGISTERED USER 
   @Get()
   async getUsers(): Promise<any> {
-    const users = this.userService.getUsers();
+    const users =  this.userService.getUsers();
     return (await users).length > 0 ? users : { message: 'No users found' };
   }
+
+
+
 
 }
