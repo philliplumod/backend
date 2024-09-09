@@ -10,7 +10,8 @@ export class UserController {
   // POST FOR REGISTER A USER
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+    const users = this.userService.createUser(createUserDto)
+    return(await users);
   }
   // FETCH ALL THE REGISTERED USER 
   @Get()

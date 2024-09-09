@@ -13,8 +13,8 @@ import { User } from './models/user/entities/user.entity';
       password: '1234',
       database: 'database',
       entities: [User],    
-      synchronize: true,       }),
-    UserModule, // Import your user module
+      synchronize: true}),
+    UserModule,
   ],
 })
 export class AppModule {}
