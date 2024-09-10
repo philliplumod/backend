@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsPhoneNumber } from "class-validator";
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -16,7 +17,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({type: 'bigint'})
+  @Column({ type: 'bigint' })
   @IsPhoneNumber()
   contactNo: number;
 
@@ -26,6 +27,10 @@ export class User {
   @Column()
   status: boolean;
 
+  @Column()
+  password: string;
+
+  async hashPassword(): Promise<void> {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }
-
-
