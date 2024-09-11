@@ -14,10 +14,10 @@ export class UserService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const {
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
-      contactNo,
+      contact_no,
       birthday,
       status,
       password,
@@ -41,10 +41,10 @@ export class UserService {
 
     // Create new user
     const newUser = this.userRepository.create({
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
-      contactNo: Number(contactNo),
+      contact_no: Number(contact_no),
       birthday,
       status,
       password: hashedPassword,

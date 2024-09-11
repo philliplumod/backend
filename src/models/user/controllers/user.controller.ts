@@ -12,7 +12,7 @@ import { CreateUserDto, LoginUserDto } from '../user.dto';
 import { User } from '../entities/user.entity';
 import { Request } from 'express';
 
-@Controller('auth')
+@Controller('user')
 export class AuthController {
   constructor(private readonly userService: UserService) {}
 
@@ -45,7 +45,7 @@ export class AuthController {
 
       const isPasswordValid = await this.userService.validatePassword(
         loginUserDto.password,
-        user.password,
+        user.password,      
       );
       if (!isPasswordValid) {
         throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
@@ -82,7 +82,7 @@ export class AuthController {
         await this.userService.logUser(user);
       }
       return { message: 'Multiple users logged successfully' };
-    } catch (error) {
+    } catch (error) { 
       throw new HttpException(
         'Failed to log multiple users',
         HttpStatus.INTERNAL_SERVER_ERROR,

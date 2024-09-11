@@ -3,23 +3,23 @@ import { IsPhoneNumber } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-@Entity()
+@Entity({name: 'tbl_user'})
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuidv4();
+  user_id: string = uuidv4();
 
   @Column()
-  firstName: string;
+  first_name: string;
 
   @Column()
-  lastName: string;
+  last_name: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column({ type: 'bigint' })
   @IsPhoneNumber()
-  contactNo: number;
+  contact_no: number;
 
   @Column()
   birthday: string;
