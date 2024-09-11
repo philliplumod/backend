@@ -23,21 +23,8 @@ export class UserService {
       password,
     } = createUserDto;
 
-    // Check if the user already exists
-    // const existingUser = await this.userRepository.findOne({
-    //   where: { email },
-    // });
-    // if (existingUser) {
-    //   throw new Error('User with this email already exists.');
-    // }
-
     // Hash password before saving
     let hashedPassword = await hash(password, 10);
-    // Limit the hashed password to 60 characters
-    const MAX_HASH_LENGTH = 15;
-    if (hashedPassword.length > MAX_HASH_LENGTH) {
-      hashedPassword = hashedPassword.substring(0, MAX_HASH_LENGTH);
-    }
 
     // Create new user
     const newUser = this.userRepository.create({

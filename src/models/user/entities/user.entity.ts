@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 @Entity({name: 'tbl_user'})
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  user_id: string = uuidv4();
+  user_id: string;
 
   @Column()
   first_name: string;
