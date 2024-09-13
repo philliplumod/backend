@@ -1,9 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsPhoneNumber } from 'class-validator';
-import { v4 as uuidv4 } from 'uuid';
-import * as bcrypt from 'bcrypt';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { UserDocument } from 'src/models/document/entities/document.entity';
 
-@Entity({name: 'tbl_user'})
+@Entity({ name: 'tbl_user' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   user_id: string;
@@ -18,7 +16,6 @@ export class User {
   email: string;
 
   @Column({ type: 'bigint' })
-  @IsPhoneNumber()
   contact_no: number;
 
   @Column()
@@ -30,7 +27,7 @@ export class User {
   @Column()
   password: string;
 
-  async hashPassword(): Promise<void> {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+  // One user can have multiple documents
+  @OneToMany(() => UserDocument, (document) => document.user)
+  documents: UserDocument[];
 }
