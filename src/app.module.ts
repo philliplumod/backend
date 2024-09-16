@@ -26,7 +26,7 @@ import { DocumentModule } from './models/document/user.document.module';
       inject: [ConfigService],
     }),
     UserModule,
-    DocumentModule
+    DocumentModule,
   ],
 })
 export class AppModule {}

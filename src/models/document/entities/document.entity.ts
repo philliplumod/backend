@@ -8,7 +8,7 @@ import {
 import { User } from 'src/models/user/entities/user.entity';
 
 @Entity({ name: 'tbl_document' })
-export class UserDocument  {
+export class UserDocument {
   @PrimaryGeneratedColumn('uuid')
   document_id: string;
 

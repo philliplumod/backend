@@ -2,10 +2,12 @@ import {
   Controller,
   Post,
   Body,
+  Put,
   Get,
   HttpException,
   HttpStatus,
   Req,
+  Param,
 } from '@nestjs/common';
 import { UserService } from '../user.service';
 import { CreateUserDto, LoginUserDto } from '../user.dto';
@@ -85,6 +87,21 @@ export class AuthController {
     } catch (error) {
       throw new HttpException(
         'Failed to log multiple users',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  @Put(':id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: any,
+  ): Promise<any> {
+    try {
+      const updatedUser = await this.userService.updateUser(id, updateUserDto);
+      return updatedUser;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to update user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

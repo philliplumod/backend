@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto, LoginUserDto } from './user.dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './user.dto';
 import { hash, compare } from 'bcrypt';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class UserService {
 
     // Hash password before saving
     let hashedPassword = await hash(password, 10);
-
+    //password
     // Create new user
     const newUser = this.userRepository.create({
       first_name,
@@ -49,6 +49,22 @@ export class UserService {
     }
 
     return null;
+  }
+
+  async updateUser(
+    user_id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { user_id } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${user_id} not found`);
+    }
+
+    // Update user properties
+    Object.assign(user, updateUserDto);
+
+    return await this.userRepository.save(user);
   }
 
   async getUsers(): Promise<User[]> {
