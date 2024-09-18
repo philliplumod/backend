@@ -49,28 +49,3 @@ export class LoginUserDto {
   password: string;
 }
 
-export class UpdateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  first_name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  last_name: string;
-
-  @IsEmail()
-  email: string;
-
-  contact_no: string;
-
-  @IsNotEmpty()
-  @IsString()
-  birthday: string;
-
-  @IsBoolean()
-  status: boolean;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-}

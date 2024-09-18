@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, LoginUserDto } from './user.dto';
 import { hash, compare } from 'bcrypt';
 import { UserDocument } from '../document/entities/document.entity';
 
@@ -68,21 +68,42 @@ export class UserService {
     return null;
   }
 
-  async updateUser(
-    user_id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { user_id } });
-
+  async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { user_id }, relations: ['documents'] });
+  
     if (!user) {
       throw new NotFoundException(`User with ID ${user_id} not found`);
     }
-
+  
     // Update user properties
     Object.assign(user, updateUserDto);
-
-    return await this.userRepository.save(user);
+  
+    // Update documents if provided
+    if (updateUserDto.documents && updateUserDto.documents.length > 0) {
+      // Remove old documents (optional: if you want to remove them before saving new ones)
+      await this.documentRepository.delete({ user: { user_id } });
+  
+      const updatedDocuments = updateUserDto.documents.map((doc) => {
+        const document = this.documentRepository.create({
+          ...doc,
+          user, // Ensure the documents are linked to the user
+        });
+        return document;
+      });
+  
+      user.documents = await this.documentRepository.save(updatedDocuments);
+    }
+  
+    try {
+      // Save the updated user
+      const updatedUser = await this.userRepository.save(user);
+      return updatedUser;
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      throw new InternalServerErrorException('Failed to update user');
+    }
   }
+  
 
   async getUsers(): Promise<User[]> {
     return this.userRepository.find();
