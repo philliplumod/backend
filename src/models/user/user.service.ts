@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './user.dto';
 import { hash, compare } from 'bcrypt';
+import { UserDocument } from '../document/entities/document.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserDocument)
+    private documentRepository: Repository<UserDocument>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -21,11 +24,12 @@ export class UserService {
       birthday,
       status,
       password,
+      documents,
     } = createUserDto;
 
     // Hash password before saving
-    let hashedPassword = await hash(password, 10);
-    //password
+    const hashedPassword = await hash(password, 10);
+
     // Create new user
     const newUser = this.userRepository.create({
       first_name,
@@ -37,7 +41,20 @@ export class UserService {
       password: hashedPassword,
     });
 
-    return await this.userRepository.save(newUser);
+    const savedUser = await this.userRepository.save(newUser);
+
+    // Create and save documents
+    const userDocuments = documents.map((doc) => {
+      const document = this.documentRepository.create({
+        ...doc,
+        user: savedUser,
+      });
+      return document;
+    });
+
+    await this.documentRepository.save(userDocuments);
+
+    return savedUser;
   }
 
   async validateUser(loginUserDto: LoginUserDto): Promise<User | null> {

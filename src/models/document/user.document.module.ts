@@ -8,6 +8,7 @@ import { DocumentController } from './controller/user.document.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([UserDocument, User])], // Updated here
   providers: [DocumentService],
+  exports: [TypeOrmModule], // Export TypeOrmModule to make UserDocumentRepository available
   controllers: [DocumentController],
 })
 export class DocumentModule {}

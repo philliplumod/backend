@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsString, IsEmail, IsBoolean } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
+import { CreateDocumentDto } from '../document/user.document.dto';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -24,6 +33,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateDocumentDto)
+  documents: CreateDocumentDto[];
 }
 
 export class LoginUserDto {
