@@ -2,12 +2,13 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto, LoginUserDto } from './user.dto';
 import { hash, compare } from 'bcrypt';
-import { UserDocument } from '../document/entities/document.entity';
+import { CreateUserDto, LoginUserDto } from './dto/user.dto';
+import { UserDocument } from './entities/document.entity';
 
 @Injectable()
 export class UserService {
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -110,7 +111,7 @@ export class UserService {
   
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ where: { isArchived: false } });
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -123,6 +124,20 @@ export class UserService {
   ): Promise<boolean> {
     return await compare(password, storedPassword);
   }
+
+  async archiveUser(user_id: string): Promise<void> {
+    await this.userRepository.manager.transaction(async (transactionalEntityManager) => {
+      const user = await transactionalEntityManager.findOne(User, { where: { user_id } });
+  
+      if (!user) {
+        throw new Error('User not found');
+      }
+  
+      user.isArchived = true;
+      await transactionalEntityManager.save(user);
+    });
+  }
+  
 
   // delete this before deploying in the prod. P3LEP
   async logUser(user: any): Promise<void> {

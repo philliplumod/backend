@@ -6,7 +6,7 @@ import {
   IsArray,
   ValidateNested,
 } from 'class-validator';
-import { CreateDocumentDto } from '../document/user.document.dto';
+import { CreateDocumentDto } from './user.document.dto';
 import { Type } from 'class-transformer';
 
 export class CreateUserDto {
@@ -36,7 +36,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  address: string
+  address: string;
 
   @IsNotEmpty()
   @IsString()
@@ -56,4 +56,3 @@ export class LoginUserDto {
   @IsString()
   password: string;
 }
-

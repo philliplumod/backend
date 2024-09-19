@@ -25,7 +25,10 @@ export class UserDocument {
   support_no: string;
 
   // Many documents can be linked to one user
-  @ManyToOne(() => User, (user) => user.documents, { onDelete: 'CASCADE', eager: false })
+  @ManyToOne(() => User, (user) => user.documents, {
+    onDelete: 'CASCADE',
+    eager: false,
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

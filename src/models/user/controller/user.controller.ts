@@ -8,11 +8,13 @@ import {
   HttpStatus,
   Req,
   Param,
+  Delete,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from '../user.service';
-import { CreateUserDto, LoginUserDto } from '../user.dto';
 import { User } from '../entities/user.entity';
 import { Request } from 'express';
+import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
 
 @Controller('user')
 export class AuthController {
@@ -106,4 +108,14 @@ export class AuthController {
       );
     }
   }
+
+  @Delete(':id/archive')
+  async archiveUser(@Param('id') id: string): Promise<void> {
+    try {
+      await this.userService.archiveUser(id);
+    } catch (error) {
+      throw new HttpException('Failed to archive user: ' + error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
 }

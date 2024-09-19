@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UserDocument } from 'src/models/document/entities/document.entity';
+import { UserDocument } from 'src/models/user/entities/document.entity';
 
 @Entity({ name: 'tbl_user' })
 export class User {
@@ -36,4 +36,7 @@ export class User {
   // One user can have multiple documents
   @OneToMany(() => UserDocument, (document) => document.user)
   documents: UserDocument[];
+  
+  @Column({ default: false })
+  isArchived: boolean;
 }

@@ -3,8 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
-import { UserDocument } from './models/document/entities/document.entity';
-import { DocumentModule } from './models/document/user.document.module';
+import { UserDocument } from './models/user/entities/document.entity';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { DocumentModule } from './models/document/user.document.module';
       inject: [ConfigService],
     }),
     UserModule,
-    DocumentModule,
   ],
 })
 export class AppModule {}
