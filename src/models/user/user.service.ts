@@ -24,6 +24,8 @@ export class UserService {
       birthday,
       status,
       password,
+      address,
+      gender,
       documents,
     } = createUserDto;
 
@@ -39,6 +41,8 @@ export class UserService {
       birthday,
       status,
       password: hashedPassword,
+      address,
+      gender
     });
 
     const savedUser = await this.userRepository.save(newUser);

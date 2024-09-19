@@ -34,6 +34,14 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
+  @IsNotEmpty()
+  @IsString()
+  address: string
+
+  @IsNotEmpty()
+  @IsString()
+  gender: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateDocumentDto)

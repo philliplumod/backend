@@ -27,6 +27,12 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  address: string;
+
+  @Column()
+  gender: string;
+
   // One user can have multiple documents
   @OneToMany(() => UserDocument, (document) => document.user)
   documents: UserDocument[];

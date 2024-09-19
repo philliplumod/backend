@@ -5,6 +5,7 @@ export class CreateDocumentDto {
   @IsString()
   license_no: string;
 
+
   @IsNotEmpty()
   @IsString()
   license_id: string;
