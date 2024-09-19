@@ -36,7 +36,7 @@ export class User {
   // One user can have multiple documents
   @OneToMany(() => UserDocument, (document) => document.user)
   documents: UserDocument[];
-  
+
   @Column({ default: false })
   isArchived: boolean;
 }

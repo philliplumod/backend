@@ -114,8 +114,10 @@ export class AuthController {
     try {
       await this.userService.archiveUser(id);
     } catch (error) {
-      throw new HttpException('Failed to archive user: ' + error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Failed to archive user: ' + error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-  
 }

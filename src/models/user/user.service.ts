@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -8,7 +12,6 @@ import { UserDocument } from './entities/document.entity';
 
 @Injectable()
 export class UserService {
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -43,7 +46,7 @@ export class UserService {
       status,
       password: hashedPassword,
       address,
-      gender
+      gender,
     });
 
     const savedUser = await this.userRepository.save(newUser);
@@ -73,21 +76,27 @@ export class UserService {
     return null;
   }
 
-  async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { user_id }, relations: ['documents'] });
-  
+  async updateUser(
+    user_id: string,
+    updateUserDto: CreateUserDto,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+      relations: ['documents'],
+    });
+
     if (!user) {
       throw new NotFoundException(`User with ID ${user_id} not found`);
     }
-  
+
     // Update user properties
     Object.assign(user, updateUserDto);
-  
+
     // Update documents if provided
     if (updateUserDto.documents && updateUserDto.documents.length > 0) {
       // Remove old documents (optional: if you want to remove them before saving new ones)
       await this.documentRepository.delete({ user: { user_id } });
-  
+
       const updatedDocuments = updateUserDto.documents.map((doc) => {
         const document = this.documentRepository.create({
           ...doc,
@@ -95,10 +104,10 @@ export class UserService {
         });
         return document;
       });
-  
+
       user.documents = await this.documentRepository.save(updatedDocuments);
     }
-  
+
     try {
       // Save the updated user
       const updatedUser = await this.userRepository.save(user);
@@ -108,7 +117,6 @@ export class UserService {
       throw new InternalServerErrorException('Failed to update user');
     }
   }
-  
 
   async getUsers(): Promise<User[]> {
     return this.userRepository.find({ where: { isArchived: false } });
@@ -126,18 +134,21 @@ export class UserService {
   }
 
   async archiveUser(user_id: string): Promise<void> {
-    await this.userRepository.manager.transaction(async (transactionalEntityManager) => {
-      const user = await transactionalEntityManager.findOne(User, { where: { user_id } });
-  
-      if (!user) {
-        throw new Error('User not found');
-      }
-  
-      user.isArchived = true;
-      await transactionalEntityManager.save(user);
-    });
+    await this.userRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const user = await transactionalEntityManager.findOne(User, {
+          where: { user_id },
+        });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        user.isArchived = true;
+        await transactionalEntityManager.save(user);
+      },
+    );
   }
-  
 
   // delete this before deploying in the prod. P3LEP
   async logUser(user: any): Promise<void> {

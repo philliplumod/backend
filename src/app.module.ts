@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
 import { UserDocument } from './models/user/entities/document.entity';
+import { MotorModule } from './models/motor/motor.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserDocument } from './models/user/entities/document.entity';
       inject: [ConfigService],
     }),
     UserModule,
+    MotorModule,
   ],
 })
 export class AppModule {}
