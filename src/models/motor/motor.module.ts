@@ -4,6 +4,6 @@ import { MotorController } from './motor.controller';
 
 @Module({
   providers: [MotorService],
-  controllers: [MotorController]
+  controllers: [MotorController],
 })
 export class MotorModule {}

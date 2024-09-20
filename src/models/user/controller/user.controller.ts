@@ -37,6 +37,23 @@ export class AuthController {
     }
   }
 
+  //for developer testing
+  @Post('log-multiple-users')
+  async logMultipleUsers(@Body() users: any[]): Promise<any> {
+    try {
+      for (const user of users) {
+        // Assuming userService has a method to log a user
+        await this.userService.logUser(user);
+      }
+      return { message: 'Multiple users logged successfully' };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to log multiple users',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Post('login')
   async login(
     @Body() loginUserDto: LoginUserDto,
@@ -77,22 +94,6 @@ export class AuthController {
     }
   }
 
-  //for developer testing
-  @Post('log-multiple-users')
-  async logMultipleUsers(@Body() users: any[]): Promise<any> {
-    try {
-      for (const user of users) {
-        // Assuming userService has a method to log a user
-        await this.userService.logUser(user);
-      }
-      return { message: 'Multiple users logged successfully' };
-    } catch (error) {
-      throw new HttpException(
-        'Failed to log multiple users',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
@@ -110,12 +111,30 @@ export class AuthController {
   }
 
   @Delete(':id/archive')
-  async archiveUser(@Param('id') id: string): Promise<void> {
+  async archiveUser(
+    @Param('id') id: string,
+  ): Promise<{ message: string; user: any }> {
     try {
-      await this.userService.archiveUser(id);
+      const archivedUser = await this.userService.archiveUser(id);
+      return { message: 'User archived successfully', user: archivedUser };
     } catch (error) {
       throw new HttpException(
         'Failed to archive user: ' + error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Put(':id/restore/')
+  async restoreUser(
+    @Param('id') id: string,
+  ): Promise<{ message: string; user: any }> {
+    try {
+      const restoredUser = await this.userService.restoreUser(id);
+      return { message: 'User restored successfully', user: restoredUser };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to restore user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

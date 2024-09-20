@@ -119,7 +119,10 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find({ where: { isArchived: false } });
+    return this.userRepository.find({
+      where: { isArchived: false },
+      relations: ['documents'],
+    });
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -145,6 +148,23 @@ export class UserService {
         }
 
         user.isArchived = true;
+        await transactionalEntityManager.save(user);
+      },
+    );
+  }
+
+  async restoreUser(id: string): Promise<void> {
+    await this.userRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const user = await transactionalEntityManager.findOne(User, {
+          where: { user_id: id },
+        });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        user.isArchived = false;
         await transactionalEntityManager.save(user);
       },
     );
