@@ -85,10 +85,6 @@ export class UserService {
       relations: ['documents'],
     });
 
-    if (!user) {
-      throw new NotFoundException(`User with ID ${user_id} not found`);
-    }
-
     // Update user properties
     Object.assign(user, updateUserDto);
 

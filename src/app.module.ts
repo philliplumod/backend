@@ -5,6 +5,7 @@ import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
 import { UserDocument } from './models/user/entities/document.entity';
 import { MotorModule } from './models/motor/motor.module';
+import { Motor } from './models/motor/entities/motor.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { MotorModule } from './models/motor/motor.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, UserDocument],
+        entities: [User, UserDocument, Motor],
         synchronize: true,
       }),
       inject: [ConfigService],
