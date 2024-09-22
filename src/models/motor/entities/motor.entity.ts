@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { MotorBrand } from './motor.brand.entity';
 
 @Entity({ name: 'tbl_motor' })
 export class Motor {
@@ -8,10 +9,7 @@ export class Motor {
   @Column()
   model: string;
 
-  @Column()
-  brand: string;
-
-  @Column()
+  @Column('decimal') // Use decimal for currency values
   price_per_day: number;
 
   @Column()
@@ -25,4 +23,10 @@ export class Motor {
 
   @Column({ default: false })
   isArchived: boolean;
+
+  @Column()
+  brand_name: string;
+
+  @OneToMany(() => MotorBrand, (motorBrand) => motorBrand.motor)
+  brands: MotorBrand[]; // Relationship with MotorBrand
 }

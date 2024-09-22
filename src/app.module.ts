@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
-import { UserDocument } from './models/user/entities/document.entity';
+import { UserDocument } from './models/user/entities/user.document.entity';
 import { MotorModule } from './models/motor/motor.module';
 import { Motor } from './models/motor/entities/motor.entity';
+import { MotorBrand } from './models/motor/entities/motor.brand.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Motor } from './models/motor/entities/motor.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, UserDocument, Motor],
+        entities: [User, UserDocument, Motor, MotorBrand],
         synchronize: true,
       }),
       inject: [ConfigService],

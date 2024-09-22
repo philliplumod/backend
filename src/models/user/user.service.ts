@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { hash, compare } from 'bcrypt';
 import { CreateUserDto, LoginUserDto } from './dto/user.dto';
-import { UserDocument } from './entities/document.entity';
+import { UserDocument } from './entities/user.document.entity';
 
 @Injectable()
 export class UserService {

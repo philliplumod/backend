@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UserDocument } from 'src/models/user/entities/document.entity';
+import { UserDocument } from './user.document.entity';
 
 @Entity({ name: 'tbl_user' })
 export class User {
@@ -33,7 +33,6 @@ export class User {
   @Column()
   gender: string;
 
-  // One user can have multiple documents
   @OneToMany(() => UserDocument, (document) => document.user)
   documents: UserDocument[];
 

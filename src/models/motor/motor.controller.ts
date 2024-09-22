@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -37,7 +38,7 @@ export class MotorController {
   async createMotor(@Body() createMotorDto: CreateMotorDto): Promise<Motor> {
     try {
       const existingMotor = await this.motorService.findMotorByBrandAndModel(
-        createMotorDto.brand,
+        createMotorDto.brand_name,
         createMotorDto.model,
       );
       if (existingMotor) {
@@ -88,6 +89,19 @@ export class MotorController {
       console.error('Error fetching visible motors:', error);
       throw new HttpException(
         'Error fetching visible motors',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id/delete')
+  async deleteMotor(@Param('id') id: string): Promise<any> {
+    try {
+      const deletedMotor = await this.motorService.deleteMotor(id);
+      return deletedMotor;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to delete motor',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateMotorDto {
   @IsNotEmpty()
@@ -6,11 +12,7 @@ export class CreateMotorDto {
   model: string;
 
   @IsNotEmpty()
-  @IsString()
-  brand: string;
-
-  @IsNotEmpty()
-  @IsString()
+  @IsNumber() // Changed to IsNumber for price_per_day
   price_per_day: number;
 
   @IsNotEmpty()
@@ -24,4 +26,12 @@ export class CreateMotorDto {
   @IsNotEmpty()
   @IsBoolean()
   isVisible: boolean;
+
+  @IsNotEmpty()
+  @IsString()
+  brand_name: string; // This will be the brand name
+
+  @IsNotEmpty()
+  @IsUUID() // Add this if you want to reference the MotorBrand
+  brand_id: string; // This will be the FK to the MotorBrand
 }

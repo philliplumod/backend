@@ -22,13 +22,20 @@ export class MotorService {
   findVisibleMotors(): Promise<Motor[]> {
     return this.motorRepository.find({ where: { isVisible: true } });
   }
-  async findMotorByBrandAndModel(brand: string, model: string): Promise<Motor> {
-    return this.motorRepository.findOne({ where: { brand, model } });
+  async findMotorByBrandAndModel(
+    brand_name: string,
+    model: string,
+  ): Promise<Motor> {
+    return this.motorRepository.findOne({ where: { brand_name, model } });
   }
 
   async createMotor(createMotorDto: CreateMotorDto): Promise<Motor> {
     const motor = this.motorRepository.create(createMotorDto);
     return this.motorRepository.save(motor);
+  }
+
+  async deleteMotor(motor_id: string): Promise<void> {
+    await this.motorRepository.delete({ motor_id });
   }
 
   async updateMotor(
