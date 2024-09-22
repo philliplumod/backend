@@ -20,7 +20,7 @@ export class Motor {
   @Column()
   motor_reg_no: string;
 
-  @Column({ default: false })
+  @Column()
   isVisible: boolean;
 
   @Column({ default: false })

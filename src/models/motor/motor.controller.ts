@@ -38,7 +38,7 @@ export class MotorController {
     try {
       const existingMotor = await this.motorService.findMotorByBrandAndModel(
         createMotorDto.brand,
-        createMotorDto.model    ,
+        createMotorDto.model,
       );
       if (existingMotor) {
         throw new HttpException(
@@ -60,7 +60,7 @@ export class MotorController {
     }
   }
 
-  @Put(':id')
+  @Put(':id/update')
   async updateMotor(
     @Param('id') id: string,
     @Body() updateMotorDto: any,
@@ -74,6 +74,20 @@ export class MotorController {
     } catch (error) {
       throw new HttpException(
         'Failed to update motor',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('visible')
+  async getVisibleMotors(): Promise<any> {
+    try {
+      const visibleMotors = await this.motorService.findVisibleMotors();
+      return visibleMotors;
+    } catch (error) {
+      console.error('Error fetching visible motors:', error);
+      throw new HttpException(
+        'Error fetching visible motors',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Motor } from './entities/motor.entity';
@@ -15,6 +19,9 @@ export class MotorService {
     return this.motorRepository.find({});
   }
 
+  findVisibleMotors(): Promise<Motor[]> {
+    return this.motorRepository.find({ where: { isVisible: true } });
+  }
   async findMotorByBrandAndModel(brand: string, model: string): Promise<Motor> {
     return this.motorRepository.findOne({ where: { brand, model } });
   }
@@ -31,14 +38,14 @@ export class MotorService {
     const motor = await this.motorRepository.findOne({
       where: { motor_id },
     });
-  
+
     if (!motor) {
       throw new NotFoundException(`Motor with id ${motor_id} not found`);
     }
-  
+
     // Update motor properties
     Object.assign(motor, updateMotorDto);
-  
+
     try {
       // Save the updated motor
       const updatedMotor = await this.motorRepository.save(motor);
@@ -48,5 +55,4 @@ export class MotorService {
       throw new InternalServerErrorException('Failed to update motor');
     }
   }
-  
 }

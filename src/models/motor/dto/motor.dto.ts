@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateMotorDto {
   @IsNotEmpty()
@@ -21,5 +21,7 @@ export class CreateMotorDto {
   @IsString()
   motor_reg_no: string;
 
-  
+  @IsNotEmpty()
+  @IsBoolean()
+  isVisible: boolean;
 }
