@@ -53,5 +53,7 @@ export class MotorService {
     return this.motorRepository.save(newMotor);
   }
 
-  x;
+  async getMotors(): Promise<Motor[]> {
+    return this.motorRepository.find({ relations: ['motorBrand'] });
+  }
 }
