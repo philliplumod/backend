@@ -4,7 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
 import { UserDocument } from './models/user/entities/user.document.entity';
-
+import { MotorBrand } from './models/motor/entities/motor.brand.entity';
+import { MotorModule } from './models/motor/motor.module';
 
 @Module({
   imports: [
@@ -20,12 +21,13 @@ import { UserDocument } from './models/user/entities/user.document.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, UserDocument],
+        entities: [User, UserDocument, MotorBrand],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UserModule,
-  ]
+    MotorModule,
+  ],
 })
 export class AppModule {}
