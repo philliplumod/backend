@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, Param } from '@nestjs/common';
 import { MotorBrandService } from '../services/motor.brand.service';
 import { MotorBrandDto } from '../dto/motor.brand.dto';
-import { request } from 'http';
+import { MotorBrand } from '../entities/motor.brand.entity';
 
 @Controller('motor-brand')
 export class MotorBrandController {
@@ -10,23 +10,32 @@ export class MotorBrandController {
   @Post('create')
   async createMotorBrand(
     @Body() createMotorBrandDto: MotorBrandDto,
-  ): Promise<any> {
+  ): Promise<MotorBrand> {
     return this.motorBrandService.createMotorBrand(createMotorBrandDto);
   }
 
   @Get('brands')
-    async getMotorBrands(@Req() request: Request): Promise<any> {
-      try {
-        const brands = await this.motorBrandService.getMotorBrands();
-        if (brands.length === 0) {
-          return { message: 'No motor brands found' };
-        }
-        return brands;
-      } catch (error) {
-        throw new HttpException(
-          'Failed to get motor brands',
-          HttpStatus.INTERNAL_SERVER_ERROR);
+  async getMotorBrands(): Promise<MotorBrand[] | { message: string }> {
+    try {
+      const brands = await this.motorBrandService.getMotorBrands();
+      if (brands.length === 0) {
+        return { message: 'No motor brands found' };
       }
-        // return this.motorBrandService.getMotorBrands();
+      return brands;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to get motor brands',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
     }
+  }
+
+  // New PUT method for updating a motor brand
+  @Put('update/:id')
+  async updateMotorBrand(
+    @Param('id') brand_id: string,
+    @Body() updateMotorBrandDto: MotorBrandDto,
+  ): Promise<MotorBrand> {
+    return this.motorBrandService.updateMotorBrand(brand_id, updateMotorBrandDto);
+  }
 }
