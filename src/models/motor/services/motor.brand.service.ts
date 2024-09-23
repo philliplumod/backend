@@ -6,6 +6,7 @@ import { MotorBrandDto } from '../dto/motor.brand.dto';
 
 @Injectable()
 export class MotorBrandService {
+
   constructor(
     @InjectRepository(MotorBrand)
     private readonly motorBrandRepository: Repository<MotorBrand>,
@@ -16,6 +17,11 @@ export class MotorBrandService {
       where: { brand_name },
     });
     return !!brand;
+  }
+
+  getMotorBrands():Promise<MotorBrand[]> {
+    return this.motorBrandRepository.find({
+    });
   }
 
   async createMotorBrand(
