@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Put,
+  Param,
+} from '@nestjs/common';
 import { MotorBrandService } from '../services/motor.brand.service';
 import { MotorBrandDto } from '../dto/motor.brand.dto';
 import { MotorBrand } from '../entities/motor.brand.entity';
@@ -25,7 +34,7 @@ export class MotorBrandController {
     } catch (error) {
       throw new HttpException(
         'Failed to get motor brands',
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -36,6 +45,9 @@ export class MotorBrandController {
     @Param('id') brand_id: string,
     @Body() updateMotorBrandDto: MotorBrandDto,
   ): Promise<MotorBrand> {
-    return this.motorBrandService.updateMotorBrand(brand_id, updateMotorBrandDto);
+    return this.motorBrandService.updateMotorBrand(
+      brand_id,
+      updateMotorBrandDto,
+    );
   }
 }
