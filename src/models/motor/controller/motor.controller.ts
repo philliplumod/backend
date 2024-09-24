@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -53,5 +54,24 @@ export class MotorController {
     @Param('id') id: string,
   ): Promise<Motor> {
     return this.motorService.updateMotor(id, updateMotorDto);
+  }
+
+  @Get('visible')
+  async getVisibleMotors(): Promise<{ message: string; motors: Motor[] }> {
+    const motors = await this.motorService.getVisibleMotors();
+    return {
+      message: `Visible motors retrieved successfully: ${motors.length}`,
+      motors,
+    };
+  }
+
+  @Delete(':id')
+  async deleteMotor(@Param('id') id: string): Promise<{ message: string }> {
+    return this.motorService.deleteMotor(id);
+  }
+
+  @Get('archived')
+  async getArchivedMotors(): Promise<{ motors: Motor[] }> {
+    return { motors: await this.motorService.getArchivedMotors() };
   }
 }
