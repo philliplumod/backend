@@ -57,7 +57,9 @@ export class MotorService {
     return this.motorRepository.find({ relations: ['motorBrand'] });
   }
 
-  async bulkCreateMotors(motorDtos: MotorDto[]): Promise<{ message: string; motors: Motor[] }> {
+  async bulkCreateMotors(
+    motorDtos: MotorDto[],
+  ): Promise<{ message: string; motors: Motor[] }> {
     const motorsToCreate: Motor[] = [];
     const plateNumbers: string[] = [];
 
@@ -99,5 +101,36 @@ export class MotorService {
     return { message: 'Motors created successfully', motors: savedMotors };
   }
 
-  
+  async updateMotor(
+    motor_id: string,
+    updateMotorDto: MotorDto,
+  ): Promise<Motor> {
+    const motor = await this.motorRepository.findOne({
+      where: { motor_id },
+      relations: ['motorBrand'],
+    });
+
+    if (!motor) {
+      throw new NotFoundException(`Motor with ID ${motor_id} not found`);
+    }
+
+    // If brand_id is provided, fetch the MotorBrand entity
+    if (updateMotorDto.brand_id) {
+      const motorBrand = await this.motorBrandRepository.findOne({
+        where: { brand_id: updateMotorDto.brand_id },
+      });
+
+      if (!motorBrand) {
+        throw new NotFoundException(
+          `MotorBrand with ID ${updateMotorDto.brand_id} not found`,
+        );
+      }
+
+      motor.motorBrand = motorBrand; // Update the motor's brand
+    }
+
+    // Merge the rest of the fields
+    Object.assign(motor, updateMotorDto);
+    return this.motorRepository.save(motor); // Save the updated motor
+  }
 }
