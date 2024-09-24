@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { MotorService } from '../services/motor.service';
 import { MotorDto } from '../dto/motor.dto';
 import { Motor } from '../entities/motor.entity';
@@ -13,7 +13,24 @@ export class MotorController {
   }
 
   @Get('motors')
-  async getMotors(): Promise<Motor[]> {
-    return this.motorService.getMotors();
+  async getMotors(): Promise<{ message: string; motors: Motor[] }> {
+    try {
+      const motors = await this.motorService.getMotors();
+      if (motors.length === 0) {
+        return { message: 'Motors Found', motors: [] };
+      }
+      return { message: `Motors retrieved successfully: ${motors.length}`, motors };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to retrieve motors',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
+
+  @Post('bulk-create')
+  async bulkCreateMotors(@Body() motorDtos: MotorDto[]): Promise<{ message: string; motors: Motor[] }> {
+    return this.motorService.bulkCreateMotors(motorDtos);
+  }
+
 }

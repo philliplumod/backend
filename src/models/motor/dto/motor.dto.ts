@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class MotorDto {
   @IsNotEmpty()
@@ -20,6 +27,14 @@ export class MotorDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isVisible: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isDelete: boolean;
 
   // brand_id to select the motor brand
   @IsNotEmpty()

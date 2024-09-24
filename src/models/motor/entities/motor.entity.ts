@@ -27,6 +27,12 @@ export class Motor {
   @Column()
   description: string;
 
+  @Column({ default: false })
+  isVisible: boolean;
+
+  @Column({ default: false })
+  isDelete: boolean;
+
   // Foreign key relationship with MotorBrand
   @ManyToOne(() => MotorBrand, (motorBrand) => motorBrand.motors)
   @JoinColumn({ name: 'brand_id' }) // foreign key in the tbl_motor table
