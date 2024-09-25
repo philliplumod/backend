@@ -7,6 +7,7 @@ import { UserDocument } from './models/user/entities/user.document.entity';
 import { MotorBrand } from './models/motor/entities/motor.brand.entity';
 import { MotorModule } from './models/motor/motor.module';
 import { Motor } from './models/motor/entities/motor.entity';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { Motor } from './models/motor/entities/motor.entity';
     }),
     UserModule,
     MotorModule,
+    BookingModule,
   ],
 })
 export class AppModule {}
