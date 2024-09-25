@@ -11,8 +11,6 @@ import { MotorBrand } from '../entities/motor.brand.entity';
 
 @Injectable()
 export class MotorService {
-
-
   constructor(
     @InjectRepository(Motor)
     private readonly motorRepository: Repository<Motor>,
@@ -56,7 +54,10 @@ export class MotorService {
   }
 
   async getMotors(): Promise<Motor[]> {
-    return this.motorRepository.find({ where: {isDelete: false}, relations: ['motorBrand'] });
+    return this.motorRepository.find({
+      where: { isDelete: false },
+      relations: ['motorBrand'],
+    });
   }
 
   async bulkCreateMotors(
@@ -145,15 +146,15 @@ export class MotorService {
 
   async deleteMotor(motor_id: string): Promise<{ message: string }> {
     const motor = await this.motorRepository.findOne({ where: { motor_id } });
-  
+
     if (!motor) {
       throw new NotFoundException(`Motor with ID ${motor_id} not found`);
     }
-  
+
     // Mark the motor as deleted (archived)
     motor.isDelete = true; // Set isDelete to true
     await this.motorRepository.save(motor); // Save the updated motor
-  
+
     return { message: 'Motor archived successfully' };
   }
 
@@ -163,6 +164,4 @@ export class MotorService {
       relations: ['motorBrand'],
     });
   }
-  
-  
 }
