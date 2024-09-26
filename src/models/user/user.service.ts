@@ -8,8 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { hash, compare } from 'bcrypt';
-import { CreateUserDto, LoginUserDto } from './dto/user.dto';
 import { UserDocument } from './entities/user.document.entity';
+import { LoginUserDto } from './dto/user.login.dto';
+import { CreateUserDto } from './dto/user.signup.dto';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,10 @@ export class UserService {
     private documentRepository: Repository<UserDocument>,
   ) {}
 
+
+  //FIXED: one document object for each user
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    console.log('Received createUserDto:', createUserDto); 
     try {
       const {
         first_name,
@@ -32,9 +36,9 @@ export class UserService {
         password,
         address,
         gender,
-        documents,
+        document, // Now a single document object
       } = createUserDto;
-
+      console.log('Document:', document);
       // Hash password before saving
       const hashedPassword = await hash(password, 10);
 
@@ -53,16 +57,12 @@ export class UserService {
 
       const savedUser = await this.userRepository.save(newUser);
 
-      // Create and save documents if provided
-      if (documents && documents.length > 0) {
-        const userDocuments = documents.map((doc) => {
-          const document = this.documentRepository.create({
-            ...doc,
-            user: savedUser, // Associate the document with the new user
-          });
-          return document;
+      if (document) {
+        const userDocument = this.documentRepository.create({
+          ...document,
+          user: savedUser,
         });
-        await this.documentRepository.save(userDocuments);
+        await this.documentRepository.save(userDocument);
       }
 
       return savedUser;
@@ -74,7 +74,6 @@ export class UserService {
       throw new InternalServerErrorException('Failed to create user');
     }
   }
-
 
   async validateUser(loginUserDto: LoginUserDto): Promise<User | null> {
     const { email, password } = loginUserDto;
@@ -93,7 +92,7 @@ export class UserService {
   }
 
   async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { user_id }, relations: ['documents'] });
+    const user = await this.userRepository.findOne({ where: { user_id }, relations: ['document'] });
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -102,19 +101,17 @@ export class UserService {
     // Update user properties
     Object.assign(user, updateUserDto);
 
-    // Update documents if provided
-    if (updateUserDto.documents && updateUserDto.documents.length > 0) {
+    // Handle the single document update
+    if (updateUserDto.document) {
+      // Delete existing document if it exists
       await this.documentRepository.delete({ user: { user_id } });
 
-      const updatedDocuments = updateUserDto.documents.map((doc) => {
-        const document = this.documentRepository.create({
-          ...doc,
-          user,
-        });
-        return document;
+      const updatedDocument = this.documentRepository.create({
+        ...updateUserDto.document,
+        user,
       });
 
-      user.documents = await this.documentRepository.save(updatedDocuments);
+      await this.documentRepository.save(updatedDocument);
     }
 
     try {
@@ -125,13 +122,10 @@ export class UserService {
     }
   }
 
-  // Get all users
-  // This method returns all users that are not archived
-  // FIXED: Added a check to throw a NotFoundException if no users are found
   async getUsers(): Promise<User[]> {
     const users = await this.userRepository.find({
       where: { isArchived: false },
-      relations: ['documents'],
+      relations: ['document'],
     });
     if (users.length === 0) {
       throw new NotFoundException('No users found');     

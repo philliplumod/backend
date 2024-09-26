@@ -1,21 +1,20 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateDocumentDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   license_no: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   license_id: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   support_id_type: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   support_no: string;
-
 
 }

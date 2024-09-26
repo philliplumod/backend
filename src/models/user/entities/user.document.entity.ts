@@ -2,8 +2,8 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { User } from 'src/models/user/entities/user.entity';
 
@@ -24,8 +24,7 @@ export class UserDocument {
   @Column({ unique: true })
   support_no: string;
 
-  // Many documents can be linked to one user
-  @ManyToOne(() => User, (user) => user.documents, {
+  @OneToOne(() => User, (user) => user.document, {
     onDelete: 'CASCADE',
     eager: false,
   })
