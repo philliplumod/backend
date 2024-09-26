@@ -6,6 +6,7 @@ import {
   IsArray,
   ValidateNested,
   IsNumber,
+  IsPhoneNumber,
 } from 'class-validator';
 import { CreateDocumentDto } from './user.document.dto';
 import { Type } from 'class-transformer';
@@ -23,7 +24,7 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsPhoneNumber('PH')
   contact_no: number;
 
   @IsNotEmpty()

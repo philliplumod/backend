@@ -125,11 +125,18 @@ export class UserService {
     }
   }
 
+  // Get all users
+  // This method returns all users that are not archived
+  // FIXED: Added a check to throw a NotFoundException if no users are found
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find({
+    const users = await this.userRepository.find({
       where: { isArchived: false },
       relations: ['documents'],
     });
+    if (users.length === 0) {
+      throw new NotFoundException('No users found');     
+    }
+    return users;
   }
 
   async findByEmail(email: string): Promise<User | null> {
