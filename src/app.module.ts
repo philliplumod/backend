@@ -7,6 +7,8 @@ import { UserDocument } from './models/user/entities/user.document.entity';
 import { MotorBrand } from './models/motor/entities/motor.brand.entity';
 import { MotorModule } from './models/motor/motor.module';
 import { Motor } from './models/motor/entities/motor.entity';
+import { BookingModule } from './models/booking/booking.module';
+import { Booking } from './models/booking/entities/booking.entity';
 
 @Module({
   imports: [
@@ -22,13 +24,14 @@ import { Motor } from './models/motor/entities/motor.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, UserDocument, MotorBrand, Motor],
+        entities: [User, UserDocument, MotorBrand, Motor, Booking],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UserModule,
     MotorModule,
+    BookingModule,
   ],
 })
 export class AppModule {}
