@@ -17,7 +17,5 @@ export class CreateDocumentDto {
   @IsString()
   support_no: string;
 
-  @IsNotEmpty()
-  @IsUUID()
-  user_id: string; // This will be the FK to the User
+
 }
