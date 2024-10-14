@@ -12,10 +12,12 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "strictNullChecks": true, // Enable strict null checks
+    "noImplicitAny": true,    // Enable no implicit any
+    "strictBindCallApply": true, // Enable strict bind call apply
+    "strictFunctionTypes": true, // Enable strict function types
+    "strictPropertyInitialization": true, // Enable strict property initialization
+    "forceConsistentCasingInFileNames": true, // Enable consistent casing in file names
+    "noFallthroughCasesInSwitch": true // Enable fallthrough checks in switch statements
   }
 }
