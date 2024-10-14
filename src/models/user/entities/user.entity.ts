@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { UserDocument } from './user.document.entity';
 
 @Entity({ name: 'tbl_user' })
@@ -16,10 +16,10 @@ export class User {
   email: string;
 
   @Column()
-  contact_no: string; // Changed from number to string
+  contact_no: string;
 
   @Column()
-  birthday: string;
+  birthday: Date;
 
   @Column()
   status: boolean;
@@ -31,12 +31,12 @@ export class User {
   address: string;
 
   @Column()
-  gender: string; // Ensure this field is not null
+  gender: string;
 
   @Column({ default: false })
   isArchived: boolean;
 
-  @OneToOne(() => UserDocument, document => document.user, { cascade: true })
+  @OneToOne(() => UserDocument, (document) => document.user)
   @JoinColumn()
   document: UserDocument;
 }

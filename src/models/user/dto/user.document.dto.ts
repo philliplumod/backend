@@ -16,10 +16,9 @@ export class CreateDocumentDto {
   @IsOptional()
   @IsString()
   support_id_type: string;
-  
+
   @ApiProperty()
   @IsOptional()
   @IsString()
   support_no: string;
-
 }

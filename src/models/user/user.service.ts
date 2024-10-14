@@ -22,10 +22,8 @@ export class UserService {
     private documentRepository: Repository<UserDocument>,
   ) {}
 
-
-  //FIXED: one document object for each user
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    console.log('Received createUserDto:', createUserDto); 
+    console.log('Received createUserDto:', createUserDto);
     try {
       const {
         first_name,
@@ -37,13 +35,10 @@ export class UserService {
         password,
         address,
         gender,
-        document, // Now a single document object
+        document,
       } = createUserDto;
-      console.log('Document:', document);
-      // Hash password before saving
       const hashedPassword = await hash(password, 10);
-  
-      // Create new user
+
       const newUser = this.userRepository.create({
         first_name,
         last_name,
@@ -53,23 +48,29 @@ export class UserService {
         status,
         password: hashedPassword,
         address,
-        gender, 
-        document: document ? this.documentRepository.create(document as DeepPartial<UserDocument>) : null,
+        gender,
       });
-  
+
       const savedUser = await this.userRepository.save(newUser);
-      console.log('Saved User:', savedUser);
-  
+
+      if (document) {
+        const newDocument = this.documentRepository.create({
+          ...document,
+          user: savedUser,
+        });
+        await this.documentRepository.save(newDocument);
+        savedUser.document = newDocument;
+      }
       return savedUser;
     } catch (error) {
       console.error('Error creating user:', error);
       if (error.code === '23505') {
-        // PostgreSQL unique constraint violation
         throw new ConflictException('Email already exists');
       }
       throw new InternalServerErrorException('Failed to create user');
     }
   }
+
 
   async validateUser(loginUserDto: LoginUserDto): Promise<User | null> {
     const { email, password } = loginUserDto;
@@ -79,7 +80,10 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    const isValidPassword = await this.validatePassword(password, user.password);
+    const isValidPassword = await this.validatePassword(
+      password,
+      user.password,
+    );
     if (!isValidPassword) {
       throw new NotFoundException('Incorrect password');
     }
@@ -87,19 +91,22 @@ export class UserService {
     return user;
   }
 
-  async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {  
-    const user = await this.userRepository.findOne({ where: { user_id }, relations: ['document'] });
+  async updateUser(
+    user_id: string,
+    updateUserDto: CreateUserDto,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+      relations: ['document'],
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    // Update user properties
     Object.assign(user, updateUserDto);
 
-    // Handle the single document update
     if (updateUserDto.document) {
-      // Delete existing document if it exists
       await this.documentRepository.delete({ user: { user_id } });
 
       const updatedDocument = this.documentRepository.create({
@@ -124,7 +131,7 @@ export class UserService {
       relations: ['document'],
     });
     if (users.length === 0) {
-      throw new NotFoundException('No users found');     
+      throw new NotFoundException('No users found');
     }
     return users;
   }
@@ -133,7 +140,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { email } }) || null;
   }
 
-  async validatePassword(password: string, storedPassword: string): Promise<boolean> {
+  async validatePassword(
+    password: string,
+    storedPassword: string,
+  ): Promise<boolean> {
     return await compare(password, storedPassword);
   }
 
