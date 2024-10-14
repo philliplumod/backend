@@ -12,7 +12,9 @@ import {
 import { MotorService } from '../services/motor.service';
 import { MotorDto } from '../dto/motor.dto';
 import { Motor } from '../entities/motor.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('motor')
 @Controller('motor')
 export class MotorController {
   constructor(private readonly motorService: MotorService) {}

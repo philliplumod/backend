@@ -14,7 +14,9 @@ import { UserService } from '../user.service';
 import { User } from '../entities/user.entity';
 import { LoginUserDto } from '../dto/user.login.dto';
 import { CreateUserDto } from '../dto/user.signup.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class AuthController {
   constructor(private readonly userService: UserService) {}
@@ -36,12 +38,11 @@ export class AuthController {
     return { message: 'Login successfully', user };
   }
 
-
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: CreateUserDto,
-  ): Promise<{message: string; user: User}> {
+  ): Promise<{ message: string; user: User }> {
     const user = await this.userService.updateUser(id, updateUserDto);
     return { message: 'User updated successfully', user };
   }
@@ -52,8 +53,6 @@ export class AuthController {
   async getUsers(): Promise<User[]> {
     return this.userService.getUsers();
   }
-
-
 
   @Delete('archive/:id')
   async archiveUser(@Param('id') id: string): Promise<{ message: string }> {

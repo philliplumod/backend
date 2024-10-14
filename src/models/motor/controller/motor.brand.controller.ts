@@ -11,7 +11,9 @@ import {
 import { MotorBrandService } from '../services/motor.brand.service';
 import { MotorBrandDto } from '../dto/motor.brand.dto';
 import { MotorBrand } from '../entities/motor.brand.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('motor-brand')
 @Controller('motor-brand')
 export class MotorBrandController {
   constructor(private readonly motorBrandService: MotorBrandService) {}
