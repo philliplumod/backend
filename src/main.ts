@@ -23,7 +23,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  
+  app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpErrorFilter());
 
   const config = new DocumentBuilder()

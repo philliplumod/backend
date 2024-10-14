@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { MotorBrand } from '../entities/motor.brand.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MotorBrandDto } from '../dto/motor.brand.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MotorBrandService {

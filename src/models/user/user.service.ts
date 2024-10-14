@@ -5,7 +5,6 @@ import {
   ConflictException,
   ForbiddenException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { hash, compare } from 'bcrypt';
@@ -14,6 +13,7 @@ import { DeepPartial } from 'typeorm';
 import { LoginUserDto } from './dto/user.login.dto';
 import { CreateUserDto } from './dto/user.signup.dto';
 import { UpdateUserDto } from './dto/user.update.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {

@@ -3,11 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Motor } from '../entities/motor.entity';
 import { MotorDto } from '../dto/motor.dto';
 import { MotorBrand } from '../entities/motor.brand.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MotorService {

@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Motor } from '../../motor/entities/motor.entity';
 import { User } from '../../user/entities/user.entity';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BookingService {

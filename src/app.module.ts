@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './models/user/entities/user.entity';
 import { UserModule } from './models/user/user.module';
@@ -9,6 +8,7 @@ import { MotorModule } from './models/motor/motor.module';
 import { Motor } from './models/motor/entities/motor.entity';
 import { BookingModule } from './models/booking/booking.module';
 import { Booking } from './models/booking/entities/booking.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
