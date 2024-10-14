@@ -49,4 +49,8 @@ async function bootstrap() {
 
 
 
+<<<<<<< HEAD
 bootstrap();
+=======
+bootstrap();
+>>>>>>> 58238ff3 (update main.ts)
