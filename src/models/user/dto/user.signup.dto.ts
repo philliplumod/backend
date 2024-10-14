@@ -6,6 +6,8 @@ import {
   IsArray,
   ValidateNested,
   IsNumber,
+  IsPhoneNumber,
+  IsOptional,
 } from 'class-validator';
 import { CreateDocumentDto } from './user.document.dto';
 import { Type } from 'class-transformer';
@@ -23,7 +25,7 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsPhoneNumber('PH')
   contact_no: number;
 
   @IsNotEmpty()
@@ -45,17 +47,7 @@ export class CreateUserDto {
   @IsString()
   gender: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateDocumentDto)
-  documents: CreateDocumentDto[];
-}
-
-export class LoginUserDto {
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
+  // this is now a single document object for each user
+  @IsOptional()
+  document?: CreateDocumentDto;
 }
