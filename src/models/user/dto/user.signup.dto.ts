@@ -3,14 +3,10 @@ import {
   IsString,
   IsEmail,
   IsBoolean,
-  IsArray,
-  ValidateNested,
-  IsNumber,
-  IsPhoneNumber,
   IsOptional,
+  IsPhoneNumber,
 } from 'class-validator';
-import { CreateDocumentDto } from './user.document.dto';
-import { Type } from 'class-transformer';
+import { UserDocument } from '../entities/user.document.entity';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -26,7 +22,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsPhoneNumber('PH')
-  contact_no: number;
+  contact_no: string; // Changed from number to string
 
   @IsNotEmpty()
   @IsString()
@@ -45,9 +41,8 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  gender: string;
+  gender: string; // Ensure this field is not null
 
-  // this is now a single document object for each user
   @IsOptional()
-  document?: CreateDocumentDto;
+  document?: UserDocument;
 }

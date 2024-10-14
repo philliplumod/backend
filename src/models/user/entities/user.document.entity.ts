@@ -1,18 +1,12 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
-import { User } from 'src/models/user/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity({ name: 'tbl_document' })
 export class UserDocument {
-  @PrimaryGeneratedColumn('uuid')
-  document_id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ unique: true })
+  @Column()
   license_no: string;
 
   @Column()
@@ -21,13 +15,9 @@ export class UserDocument {
   @Column()
   support_id_type: string;
 
-  @Column({ unique: true })
+  @Column()
   support_no: string;
 
-  @OneToOne(() => User, (user) => user.document, {
-    onDelete: 'CASCADE',
-    eager: false,
-  })
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => User, user => user.document)
   user: User;
 }

@@ -36,6 +36,16 @@ export class AuthController {
     return { message: 'Login successfully', user };
   }
 
+
+  @Put(':id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: CreateUserDto,
+  ): Promise<{message: string; user: User}> {
+    const user = await this.userService.updateUser(id, updateUserDto);
+    return { message: 'User updated successfully', user };
+  }
+
   //FIXED
   // BACKLOGS CHANGE IN THE FUTURE
   @Get('users')
@@ -43,13 +53,7 @@ export class AuthController {
     return this.userService.getUsers();
   }
 
-  @Put(':id')
-  async updateUser(
-    @Param('id') id: string,
-    @Body() updateUserDto: CreateUserDto,
-  ): Promise<User> {
-    return this.userService.updateUser(id, updateUserDto);
-  }
+
 
   @Delete('archive/:id')
   async archiveUser(@Param('id') id: string): Promise<{ message: string }> {

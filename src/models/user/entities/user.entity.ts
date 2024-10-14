@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import { UserDocument } from './user.document.entity';
 
 @Entity({ name: 'tbl_user' })
@@ -15,8 +15,8 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'bigint' })
-  contact_no: number;
+  @Column()
+  contact_no: string; // Changed from number to string
 
   @Column()
   birthday: string;
@@ -31,13 +31,12 @@ export class User {
   address: string;
 
   @Column()
-  gender: string;
-
-  
-
-  @OneToOne(() => UserDocument, (document) => document.user)
-  document: UserDocument[];
+  gender: string; // Ensure this field is not null
 
   @Column({ default: false })
   isArchived: boolean;
+
+  @OneToOne(() => UserDocument, document => document.user, { cascade: true })
+  @JoinColumn()
+  document: UserDocument;
 }

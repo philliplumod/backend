@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { hash, compare } from 'bcrypt';
 import { UserDocument } from './entities/user.document.entity';
+import { DeepPartial } from 'typeorm';
 import { LoginUserDto } from './dto/user.login.dto';
 import { CreateUserDto } from './dto/user.signup.dto';
 
@@ -41,32 +42,27 @@ export class UserService {
       console.log('Document:', document);
       // Hash password before saving
       const hashedPassword = await hash(password, 10);
-
+  
       // Create new user
       const newUser = this.userRepository.create({
         first_name,
         last_name,
         email,
-        contact_no: Number(contact_no),
+        contact_no,
         birthday,
         status,
         password: hashedPassword,
         address,
-        gender,
+        gender, 
+        document: document ? this.documentRepository.create(document as DeepPartial<UserDocument>) : null,
       });
-
+  
       const savedUser = await this.userRepository.save(newUser);
-
-      if (document) {
-        const userDocument = this.documentRepository.create({
-          ...document,
-          user: savedUser,
-        });
-        await this.documentRepository.save(userDocument);
-      }
-
+      console.log('Saved User:', savedUser);
+  
       return savedUser;
     } catch (error) {
+      console.error('Error creating user:', error);
       if (error.code === '23505') {
         // PostgreSQL unique constraint violation
         throw new ConflictException('Email already exists');
@@ -91,7 +87,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {
+  async updateUser(user_id: string, updateUserDto: CreateUserDto): Promise<User> {  
     const user = await this.userRepository.findOne({ where: { user_id }, relations: ['document'] });
 
     if (!user) {
