@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 import { HttpErrorFilter } from './handler/http-error.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 const port = process.env.PORT || 3001;
-const port = process.env.PORT || 3001;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,14 +26,6 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpErrorFilter());
-
-  
-  app.enableCors({
-    origin: 'http://localhost:4200', // Allow your Angular app's origin
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
-  
 
   
   app.enableCors({
