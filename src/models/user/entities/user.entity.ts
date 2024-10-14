@@ -43,5 +43,5 @@ export class User {
   isArchived: boolean;
 
   @OneToOne(() => UserDocument, (document) => document.user)
-  document: UserDocument;  
+  document: UserDocument;
 }

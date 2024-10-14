@@ -1,5 +1,11 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsEmail, IsPhoneNumber, IsBoolean, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsPhoneNumber,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 
 export class BaseUserDto {
   @ApiProperty()
@@ -16,7 +22,6 @@ export class BaseUserDto {
   @IsEmail()
   @IsOptional()
   email?: string;
-
 
   @ApiProperty()
   @IsString()

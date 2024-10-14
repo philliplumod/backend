@@ -83,7 +83,7 @@ export class UserService {
     }
 
     return user;
-}
+  }
 
   async updateUser(
     user_id: string,
