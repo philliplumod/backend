@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { MotorBrand } from './motor.brand.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'tbl_motor' })
 export class Motor {
