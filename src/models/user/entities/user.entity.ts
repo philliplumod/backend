@@ -33,6 +33,8 @@ export class User {
   @Column()
   gender: string;
 
+  
+
   @OneToOne(() => UserDocument, (document) => document.user)
   document: UserDocument[];
 
