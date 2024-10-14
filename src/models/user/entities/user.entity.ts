@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { UserDocument } from './user.document.entity';
 
 @Entity({ name: 'tbl_user' })
@@ -37,6 +43,5 @@ export class User {
   isArchived: boolean;
 
   @OneToOne(() => UserDocument, (document) => document.user)
-  @JoinColumn()
-  document: UserDocument;
+  document: UserDocument;  
 }

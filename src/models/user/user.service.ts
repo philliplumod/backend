@@ -27,23 +27,29 @@ export class UserService {
     try {
       const { password, document, ...userDetails } = createUserDto;
       const hashedPassword = await hash(password, 10);
-  
+
+      // Step 1: Create the User entity without the document field
       const newUser = this.userRepository.create({
         ...userDetails,
         password: hashedPassword,
       });
-  
+
+      // Step 2: Save the User entity to get the generated user_id
       const savedUser = await this.userRepository.save(newUser);
-  
-      if (document) {
+
+      // Step 3: Check if the document object contains valid data
+      if (document && Object.keys(document).length > 0) {
         const newDocument = this.documentRepository.create({
           ...document,
           user: savedUser,
         });
         await this.documentRepository.save(newDocument);
+
+        // Step 4: Update the User entity with the document field
         savedUser.document = newDocument;
+        await this.userRepository.save(savedUser);
       }
-  
+
       return savedUser;
     } catch (error) {
       console.error('Error creating user:', error);
@@ -53,7 +59,6 @@ export class UserService {
       throw new InternalServerErrorException('Failed to create user');
     }
   }
-
 
   async validateUser(loginUserDto: LoginUserDto): Promise<User | null> {
     const { email, password } = loginUserDto;

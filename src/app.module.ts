@@ -26,6 +26,7 @@ import { Booking } from './models/booking/entities/booking.entity';
         database: configService.get<string>('DB_DATABASE'),
         entities: [User, UserDocument, MotorBrand, Motor, Booking],
         synchronize: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),
