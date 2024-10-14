@@ -25,34 +25,16 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     console.log('Received createUserDto:', createUserDto);
     try {
-      const {
-        first_name,
-        last_name,
-        email,
-        contact_no,
-        birthday,
-        status,
-        password,
-        address,
-        gender,
-        document,
-      } = createUserDto;
+      const { password, document, ...userDetails } = createUserDto;
       const hashedPassword = await hash(password, 10);
-
+  
       const newUser = this.userRepository.create({
-        first_name,
-        last_name,
-        email,
-        contact_no,
-        birthday,
-        status,
+        ...userDetails,
         password: hashedPassword,
-        address,
-        gender,
       });
-
+  
       const savedUser = await this.userRepository.save(newUser);
-
+  
       if (document) {
         const newDocument = this.documentRepository.create({
           ...document,
@@ -61,6 +43,7 @@ export class UserService {
         await this.documentRepository.save(newDocument);
         savedUser.document = newDocument;
       }
+  
       return savedUser;
     } catch (error) {
       console.error('Error creating user:', error);
