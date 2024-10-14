@@ -1,63 +1,56 @@
-import { Type } from 'class-transformer';
-import {
-  IsOptional,
-  IsString,
-  IsEmail,
-  IsBoolean,
-  IsArray,
-  ValidateNested,
-  IsNumber,
-  IsPhoneNumber,
-} from 'class-validator';
-import { CreateDocumentDto } from './user.document.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsString, IsEmail, IsPhoneNumber, IsBoolean, IsOptional } from 'class-validator';
 
-export class CreateUserDto {
+export class BaseUserDto {
   @ApiProperty()
-  @IsOptional()
   @IsString()
-  first_name: string;
+  @IsOptional()
+  first_name?: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
-  last_name: string;
+  @IsOptional()
+  last_name?: string;
 
   @ApiProperty()
   @IsEmail()
-  email: string;
+  @IsOptional()
+  email?: string;
+
 
   @ApiProperty()
-  @IsOptional()
-  @IsPhoneNumber('PH')
-  contact_no: number;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
-  birthday: string;
+  @IsOptional()
+  password?: string;
+
+  @ApiProperty()
+  @IsPhoneNumber(null)
+  @IsOptional()
+  contact_no?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  birthday?: string;
 
   @ApiProperty()
   @IsBoolean()
-  status: boolean;
+  @IsOptional()
+  status?: boolean;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  gender?: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  password: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  address: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  gender: string;
-
-  @ApiProperty()
-  @ValidateNested({ each: true })
-  @Type(() => CreateDocumentDto)
-  document: CreateDocumentDto[];
+  document?: any; // Adjust type as needed
 }
+
+export class UpdateUserDto extends PartialType(BaseUserDto) {}

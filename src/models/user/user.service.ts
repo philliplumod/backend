@@ -12,6 +12,7 @@ import { UserDocument } from './entities/user.document.entity';
 import { DeepPartial } from 'typeorm';
 import { LoginUserDto } from './dto/user.login.dto';
 import { CreateUserDto } from './dto/user.signup.dto';
+import { UpdateUserDto } from './dto/user.update.dto';
 
 @Injectable()
 export class UserService {
@@ -81,7 +82,7 @@ export class UserService {
 
   async updateUser(
     user_id: string,
-    updateUserDto: CreateUserDto,
+    updateUserDto: UpdateUserDto,
   ): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { user_id },
@@ -90,6 +91,10 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, 10);
     }
 
     Object.assign(user, updateUserDto);
