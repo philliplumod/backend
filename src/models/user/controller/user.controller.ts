@@ -35,7 +35,7 @@ export class AuthController {
   async login(
     @Body() loginUserDto: LoginUserDto,
   ): Promise<{ message: string; user: User }> {
-    const user = await this.userService.validateUser(loginUserDto);
+    const user = await this.userService.login(loginUserDto);
     return { message: 'Login successfully', user };
   }
 

@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -61,12 +62,16 @@ export class UserService {
     }
   }
 
-  async validateUser(loginUserDto: LoginUserDto): Promise<User | null> {
+  async login(loginUserDto: LoginUserDto): Promise<User | null> {
     const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    if (user.isArchived) {
+      throw new ForbiddenException('User is archived and cannot log in');
     }
 
     const isValidPassword = await this.validatePassword(
@@ -78,7 +83,7 @@ export class UserService {
     }
 
     return user;
-  }
+}
 
   async updateUser(
     user_id: string,
