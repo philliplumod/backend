@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpErrorFilter } from './handler/http-error.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+const port = process.env.PORT || 3001;
 
 async function bootstrap() {
   dotenv.config();
@@ -11,6 +12,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpErrorFilter());
 
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('Motorcycle Rental API')
     .setDescription('The Motorcycle Rental API description')
@@ -20,9 +28,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);
 }
+
+
 
 bootstrap();
