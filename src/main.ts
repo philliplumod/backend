@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpErrorFilter } from './handler/http-error.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3001;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,6 +35,14 @@ async function bootstrap() {
     credentials: true,
   });
   
+
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('Motorcycle Rental API')
     .setDescription('The Motorcycle Rental API description')
@@ -47,6 +56,8 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);
 }
+
+
 
 
 
