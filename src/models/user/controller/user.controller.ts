@@ -29,6 +29,11 @@ export class AuthController {
     return { message: 'User created successfully', user };
   }
 
+  @Get(':id')
+  async getUserById(@Param('id') id: string): Promise<User> {
+    return this.userService.getUserById(id);
+  }
+
   @Post('login')
   async login(
     @Body('email') email: string,

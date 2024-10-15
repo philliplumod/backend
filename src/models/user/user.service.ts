@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/user.create.dto';
 import { compare, hash } from 'bcrypt';
+import { promises as fs } from 'fs';
 import { UpdateUserDto } from './dto/user.update.dto';
 
 @Injectable()
@@ -45,6 +46,43 @@ export class UserService {
         throw error;
       }
       throw new InternalServerErrorException('Failed to create user');
+    }
+  }
+
+  async getUserById(user_id: string): Promise<User> {
+    // Retrieve the user entity by ID
+    const user = await this.userRepository.findOne({ where: { user_id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Retrieve the plain text password from your separate storage
+    const plainTextPassword = await this.getPlainTextPassword(user_id);
+
+    return {
+      ...user,
+      password: plainTextPassword,
+    };
+  }
+
+  private async getPlainTextPassword(user_id: string): Promise<string> {
+    try {
+      // Assuming you have a JSON file that stores user passwords
+      const data = await fs.readFile('path_to_password_file.json', 'utf8');
+      const passwords = JSON.parse(data);
+
+      // Find the password for the specific user_id
+      const plainTextPassword = passwords[user_id];
+
+      if (!plainTextPassword) {
+        throw new NotFoundException('Password not found for this user');
+      }
+
+      return plainTextPassword;
+    } catch (error) {
+      console.error('Error retrieving plain text password:', error);
+      throw new InternalServerErrorException('Failed to retrieve password');
     }
   }
 
