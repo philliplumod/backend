@@ -12,8 +12,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../user.service';
 import { User } from '../entities/user.entity';
-import { CreateUserDto } from '../dto/user.signup.dto';
+import { CreateUserDto } from '../dto/user.create.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from '../dto/user.update.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -40,7 +41,7 @@ export class AuthController {
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
-    @Body() updateUserDto: CreateUserDto,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<{ message: string; user: User }> {
     const user = await this.userService.updateUser(id, updateUserDto);
     return { message: 'User updated successfully', user };
