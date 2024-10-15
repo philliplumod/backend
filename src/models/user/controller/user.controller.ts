@@ -12,16 +12,14 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../user.service';
 import { User } from '../entities/user.entity';
-import { LoginUserDto } from '../dto/user.login.dto';
 import { CreateUserDto } from '../dto/user.signup.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto } from '../dto/user.update.dto';
 
 @ApiTags('user')
 @Controller('user')
 export class AuthController {
   constructor(private readonly userService: UserService) {}
-  //FIXED
+
   @Post('signup')
   async signUp(
     @Body() createUserDto: CreateUserDto,
@@ -30,26 +28,24 @@ export class AuthController {
     return { message: 'User created successfully', user };
   }
 
-  //FIXED
   @Post('login')
   async login(
-    @Body() loginUserDto: LoginUserDto,
+    @Body('email') email: string,
+    @Body('password') password: string,
   ): Promise<{ message: string; user: User }> {
-    const user = await this.userService.login(loginUserDto);
+    const user = await this.userService.login(email, password);
     return { message: 'Login successfully', user };
   }
 
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: CreateUserDto,
   ): Promise<{ message: string; user: User }> {
     const user = await this.userService.updateUser(id, updateUserDto);
     return { message: 'User updated successfully', user };
   }
 
-  //FIXED
-  // BACKLOGS CHANGE IN THE FUTURE
   @Get('users')
   async getUsers(): Promise<User[]> {
     return this.userService.getUsers();

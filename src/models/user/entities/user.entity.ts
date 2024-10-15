@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
-import { UserDocument } from './user.document.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 
 @Entity({ name: 'tbl_user' })
 export class User {
@@ -13,35 +6,47 @@ export class User {
   user_id: string;
 
   @Column()
-  first_name: string;
-
-  @Column()
-  last_name: string;
-
-  @Column({ unique: true })
   email: string;
-
-  @Column()
-  contact_no: string;
-
-  @Column()
-  birthday: Date;
-
-  @Column()
-  status: boolean;
 
   @Column()
   password: string;
 
   @Column()
+  first_name: string;
+
+  @Column()
+  last_name: string;
+
+  @Column()
+  status: boolean;
+
+  @Column()
+  role: string;
+
+  @Column()
+  contact_no: string;
+
+  @Column()
   address: string;
+
+  @Column()
+  birthdate: string;
 
   @Column()
   gender: string;
 
-  @Column({ default: false })
-  isArchived: boolean;
+  @Column()
+  license_no: string;
 
-  @OneToOne(() => UserDocument, (document) => document.user)
-  document: UserDocument;
+  @Column()
+  license_front: string;
+
+  @Column()
+  license_back: string;
+
+  @Column()
+  other_id: string;
+
+  @Column()
+  other_id_no: string;
 }

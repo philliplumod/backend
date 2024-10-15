@@ -1,15 +1,25 @@
 import {
   IsNotEmpty,
   IsString,
-  IsEmail,
   IsBoolean,
   IsOptional,
   IsPhoneNumber,
+  IsDate,
+  IsEmail,
 } from 'class-validator';
-import { UserDocument } from '../entities/user.document.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -21,27 +31,18 @@ export class CreateUserDto {
   last_name: string;
 
   @ApiProperty()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsPhoneNumber('PH')
-  contact_no: string; // Changed from number to string
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  birthday: string;
-
-  @ApiProperty()
   @IsBoolean()
   status: boolean;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  password: string;
+  role: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsPhoneNumber('PH')
+  contact_no: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -51,9 +52,36 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  gender: string; // Ensure this field is not null
+  birthdate: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  gender: string;
+
+  // Document Fields
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  license_no?: string;
 
   @ApiProperty()
   @IsOptional()
-  document?: UserDocument;
+  @IsString()
+  license_front?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  license_back?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  other_id?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  other_id_no?: string;
 }

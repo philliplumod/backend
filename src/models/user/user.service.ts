@@ -1,56 +1,35 @@
 import {
+  ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  ConflictException,
-  ForbiddenException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
-import { hash, compare } from 'bcrypt';
-import { UserDocument } from './entities/user.document.entity';
-import { DeepPartial } from 'typeorm';
-import { LoginUserDto } from './dto/user.login.dto';
-import { CreateUserDto } from './dto/user.signup.dto';
-import { UpdateUserDto } from './dto/user.update.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/user.signup.dto';
+import { compare, hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(UserDocument)
-    private documentRepository: Repository<UserDocument>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    console.log('Received createUserDto:', createUserDto);
     try {
-      const { password, document, ...userDetails } = createUserDto;
-      const hashedPassword = await hash(password, 10);
-
-      // Step 1: Create the User entity without the document field
+      console.log('Creating new user with DTO:', createUserDto);
+      const hashedPassword = await hash(createUserDto.password, 10); // Hash the password
       const newUser = this.userRepository.create({
-        ...userDetails,
-        password: hashedPassword,
+        ...createUserDto,
+        password: hashedPassword, // Store the hashed password
       });
+      console.log('New user entity created:', newUser);
 
-      // Step 2: Save the User entity to get the generated user_id
       const savedUser = await this.userRepository.save(newUser);
-
-      // Step 3: Check if the document object contains valid data
-      if (document && Object.keys(document).length > 0) {
-        const newDocument = this.documentRepository.create({
-          ...document,
-          user: savedUser,
-        });
-        await this.documentRepository.save(newDocument);
-
-        // Step 4: Update the User entity with the document field
-        savedUser.document = newDocument;
-        await this.userRepository.save(savedUser);
-      }
+      console.log('User saved to database:', savedUser);
 
       return savedUser;
     } catch (error) {
@@ -62,15 +41,14 @@ export class UserService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<User | null> {
-    const { email, password } = loginUserDto;
+  async login(email: string, password: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (user.isArchived) {
+    if (user.status === false) {
       throw new ForbiddenException('User is archived and cannot log in');
     }
 
@@ -87,32 +65,18 @@ export class UserService {
 
   async updateUser(
     user_id: string,
-    updateUserDto: UpdateUserDto,
+    updateUserDto: CreateUserDto,
   ): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { user_id },
-      relations: ['document'],
-    });
+    const user = await this.userRepository.findOne({ where: { user_id } });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (updateUserDto.password) {
-      updateUserDto.password = await hash(updateUserDto.password, 10);
-    }
-
     Object.assign(user, updateUserDto);
 
-    if (updateUserDto.document) {
-      await this.documentRepository.delete({ user: { user_id } });
-
-      const updatedDocument = this.documentRepository.create({
-        ...updateUserDto.document,
-        user,
-      });
-
-      await this.documentRepository.save(updatedDocument);
+    if (updateUserDto.password) {
+      user.password = await hash(updateUserDto.password, 10); // Update hashed password
     }
 
     try {
@@ -124,18 +88,11 @@ export class UserService {
   }
 
   async getUsers(): Promise<User[]> {
-    const users = await this.userRepository.find({
-      where: { isArchived: false },
-      relations: ['document'],
-    });
+    const users = await this.userRepository.find({ where: { status: false } });
     if (users.length === 0) {
       throw new NotFoundException('No users found');
     }
     return users;
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } }) || null;
   }
 
   async validatePassword(
@@ -152,7 +109,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    user.isArchived = true;
+    user.status = true;
     await this.userRepository.save(user);
   }
 
@@ -163,7 +120,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    user.isArchived = false;
+    user.status = false;
     await this.userRepository.save(user);
   }
 }
