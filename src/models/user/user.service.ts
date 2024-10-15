@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/user.create.dto';
 import { compare, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/user.update.dto';
+import { LoginUserDto } from './dto/user.login.dto';
 
 @Injectable()
 export class UserService {
@@ -60,7 +61,8 @@ export class UserService {
     };
   }
 
-  async login(email: string, password: string): Promise<User> {
+  async login(loginUserDto: LoginUserDto): Promise<User | null> {
+    const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {

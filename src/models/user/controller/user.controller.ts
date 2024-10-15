@@ -15,6 +15,7 @@ import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/user.create.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '../dto/user.update.dto';
+import { LoginUserDto } from '../dto/user.login.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -29,17 +30,11 @@ export class AuthController {
     return { message: 'User created successfully', user };
   }
 
-  @Get(':id')
-  async getUserById(@Param('id') id: string): Promise<User> {
-    return this.userService.getUserById(id);
-  }
-
   @Post('login')
   async login(
-    @Body('email') email: string,
-    @Body('password') password: string,
+    @Body() loginUserDto: LoginUserDto,
   ): Promise<{ message: string; user: User }> {
-    const user = await this.userService.login(email, password);
+    const user = await this.userService.login(loginUserDto);
     return { message: 'Login successfully', user };
   }
 
