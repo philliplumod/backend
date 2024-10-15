@@ -43,6 +43,13 @@ async function bootstrap() {
     credentials: true,
   });
   
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('Motorcycle Rental API')
     .setDescription('The Motorcycle Rental API description')
