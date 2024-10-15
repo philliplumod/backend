@@ -31,11 +31,12 @@ export class CreateUserDto {
   last_name: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsBoolean()
-  status: boolean;
+  status: boolean = true;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   role: string;
 

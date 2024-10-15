@@ -47,9 +47,14 @@ export class AuthController {
     return { message: 'User updated successfully', user };
   }
 
-  @Get('users')
-  async getUsers(): Promise<User[]> {
-    return this.userService.getUsers();
+  @Get('users/active')
+  async getActiveUser(): Promise<User[]> {
+    return this.userService.getActiveUser();
+  }
+
+  @Get('users/inactive')
+  async getInActiveUser(): Promise<User[]> {
+    return this.userService.getInActiveUser();
   }
 
   @Delete('archive/:id')
