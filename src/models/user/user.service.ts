@@ -1,4 +1,4 @@
-import {
+import { 
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -20,8 +20,14 @@ export class UserService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
-      console.log('Creating new user with DTO:', createUserDto);
-      const hashedPassword = await hash(createUserDto.password, 10); // Hash the password
+      
+      // Check if the email already exists in the database
+      const existingUser = await this.userRepository.findOne({ where: { email: createUserDto.email } });
+      if (existingUser) {
+        throw new ConflictException('Email already exists');
+      }
+
+      const hashedPassword = await hash(createUserDto.password, 10); 
       const newUser = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword, // Store the hashed password
@@ -34,8 +40,8 @@ export class UserService {
       return savedUser;
     } catch (error) {
       console.error('Error creating user:', error);
-      if (error.code === '23505') {
-        throw new ConflictException('Email already exists');
+      if (error instanceof ConflictException) {
+        throw error;
       }
       throw new InternalServerErrorException('Failed to create user');
     }
