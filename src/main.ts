@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpErrorFilter } from './handler/http-error.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+const port = process.env.PORT || 3001;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,28 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpErrorFilter());
 
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
+
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
+  
+  app.enableCors({
+    origin: 'http://localhost:4200', // Allow your Angular app's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('Motorcycle Rental API')
     .setDescription('The Motorcycle Rental API description')
@@ -35,9 +58,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = configService.get<number>('PORT');
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);
 }
 
+
+
+<<<<<<< HEAD
 bootstrap();
+=======
+bootstrap();
+>>>>>>> 58238ff3 (update main.ts)
