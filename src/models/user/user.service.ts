@@ -57,13 +57,16 @@ export class UserService {
     }
     return {
       ...user,
-      password: user.password, 
+      password: user.password,
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<User | null> {
+  async login(loginUserDto: LoginUserDto): Promise<User> {
     const { email, password } = loginUserDto;
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: ['user_id', 'email', 'password', 'role', 'status'],
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
