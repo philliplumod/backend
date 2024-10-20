@@ -26,12 +26,15 @@ export class Motor {
   model: string;
 
   @Column()
+  motor_picture: string;
+
+  @Column()
   description: string;
 
-  @Column({ default: false })
+  @Column()
   isVisible: boolean;
 
-  @Column({ default: false })
+  @Column()
   isDelete: boolean;
 
   // Foreign key relationship with MotorBrand

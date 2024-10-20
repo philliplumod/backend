@@ -43,13 +43,6 @@ export class MotorController {
     }
   }
 
-  @Post('bulk-create')
-  async bulkCreateMotors(
-    @Body() motorDtos: MotorDto[],
-  ): Promise<{ message: string; motors: Motor[] }> {
-    return this.motorService.bulkCreateMotors(motorDtos);
-  }
-
   @Put(':id')
   async updateMotor(
     @Body() updateMotorDto: MotorDto,

@@ -19,7 +19,15 @@ export class MotorService {
   ) {}
 
   async createMotor(motorDto: MotorDto): Promise<Motor> {
-    const { brand_id, color, plate_no, price, model, description } = motorDto;
+    const {
+      brand_id,
+      color,
+      plate_no,
+      price,
+      model,
+      description,
+      motor_picture,
+    } = motorDto;
 
     // Check if a motor with the same plate_no already exists
     const existingMotor = await this.motorRepository.findOne({
@@ -48,6 +56,7 @@ export class MotorService {
       model,
       motorBrand,
       description,
+      motor_picture,
     });
 
     return this.motorRepository.save(newMotor);
@@ -58,50 +67,6 @@ export class MotorService {
       where: { isDelete: false },
       relations: ['motorBrand'],
     });
-  }
-
-  async bulkCreateMotors(
-    motorDtos: MotorDto[],
-  ): Promise<{ message: string; motors: Motor[] }> {
-    const motorsToCreate: Motor[] = [];
-    const plateNumbers: string[] = [];
-
-    for (const motorDto of motorDtos) {
-      // Check if a motor with the same plate_no already exists
-      const existingMotor = await this.motorRepository.findOne({
-        where: { plate_no: motorDto.plate_no },
-      });
-      if (existingMotor) {
-        throw new ConflictException(
-          `Motor with plate number "${motorDto.plate_no}" already exists.`,
-        );
-      }
-
-      // Find the motor brand using brand_id
-      const motorBrand = await this.motorBrandRepository.findOne({
-        where: { brand_id: motorDto.brand_id },
-      });
-      if (!motorBrand) {
-        throw new NotFoundException(
-          `Motor brand with ID "${motorDto.brand_id}" not found.`,
-        );
-      }
-
-      const newMotor = this.motorRepository.create({
-        color: motorDto.color,
-        plate_no: motorDto.plate_no,
-        price: motorDto.price,
-        model: motorDto.model,
-        motorBrand,
-        description: motorDto.description,
-      });
-
-      motorsToCreate.push(newMotor);
-      plateNumbers.push(motorDto.plate_no);
-    }
-
-    const savedMotors = await this.motorRepository.save(motorsToCreate);
-    return { message: 'Motors created successfully', motors: savedMotors };
   }
 
   async updateMotor(

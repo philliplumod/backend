@@ -21,6 +21,11 @@ export class MotorDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
+  motor_picture: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
   @IsNumber()
   price: number;
 
