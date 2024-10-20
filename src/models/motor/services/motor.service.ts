@@ -19,47 +19,30 @@ export class MotorService {
   ) {}
 
   async createMotor(motorDto: MotorDto): Promise<Motor> {
-    const {
-      brand_id,
-      color,
-      plate_no,
-      price,
-      model,
-      description,
-      motor_picture,
-    } = motorDto;
+    const { plate_no, brand_id } = motorDto;
 
-    // Check if a motor with the same plate_no already exists
-    const existingMotor = await this.motorRepository.findOne({
-      where: { plate_no },
-    });
+    // Check for existing motor and motor brand
+    const [existingMotor, motorBrand] = await Promise.all([
+      this.motorRepository.findOne({ where: { plate_no } }),
+      this.motorBrandRepository.findOne({ where: { brand_id } }),
+    ]);
+
     if (existingMotor) {
       throw new ConflictException(
         `Motor with plate number "${plate_no}" already exists.`,
       );
     }
 
-    // Find the motor brand using brand_id
-    const motorBrand = await this.motorBrandRepository.findOne({
-      where: { brand_id },
-    });
     if (!motorBrand) {
       throw new NotFoundException(
         `Motor brand with ID "${brand_id}" not found.`,
       );
     }
 
-    const newMotor = this.motorRepository.create({
-      color,
-      plate_no,
-      price,
-      model,
-      motorBrand,
-      description,
-      motor_picture,
-    });
-
-    return this.motorRepository.save(newMotor);
+    // Create and save new motor
+    return this.motorRepository.save(
+      this.motorRepository.create({ ...motorDto, motorBrand }),
+    );
   }
 
   async getMotors(): Promise<Motor[]> {
