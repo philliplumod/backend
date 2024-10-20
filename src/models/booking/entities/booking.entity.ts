@@ -14,7 +14,7 @@ export class Booking {
   booking_id: string;
 
   @Column()
-  booking_date: Date;
+  pickup_date: Date;
 
   @Column()
   return_date: Date;
@@ -23,15 +23,19 @@ export class Booking {
   booking_status: string;
 
   @Column()
-  message: string;
+  helmet: boolean;
 
-  // Foreign key for User
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' }) // This sets user_id as the foreign key column in tbl_booking
-  user: User;
+  @Column()
+  second_helmet: boolean;
 
-  // Foreign key for Motor
-  @ManyToOne(() => Motor)
-  @JoinColumn({ name: 'motor_id' }) // This sets motor_id as the foreign key column in tbl_booking
-  motor: Motor;
+  @Column()
+  phone_folder: boolean;
+
+  @Column()
+  extra_storage: boolean;
+
+  @Column()
+  payment_method: string;
+
+
 }

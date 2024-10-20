@@ -11,7 +11,7 @@ export class BookingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsDateString()
-  booking_date: Date;
+  pickup_date: Date;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -20,23 +20,31 @@ export class BookingDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  booking_status: string;
+  @IsDateString()
+  booking_status: Date;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  message: string;
+  helmet: boolean;
 
-  // Foreign key for User
   @ApiProperty()
   @IsNotEmpty()
-  @IsUUID()
-  user_id: string;
+  @IsString()
+  second_helmet: boolean;
 
-  // Foreign key for Motor
   @ApiProperty()
   @IsNotEmpty()
-  @IsUUID()
-  motor_id: string;
+  @IsString()
+  phone_folder: boolean;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  extra_storage: boolean;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  payment_method: string;
 }
