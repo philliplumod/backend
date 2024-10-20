@@ -37,7 +37,7 @@ export class Booking {
   @Column()
   payment_method: string;
 
-  @OneToOne(() =>Motor,  (motor) => motor.motor_id)
+  @OneToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;
 }

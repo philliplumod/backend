@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Motor } from '../../motor/entities/motor.entity';
 import { User } from '../../user/entities/user.entity';
@@ -19,17 +24,24 @@ export class BookingService {
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
     try {
-      const motor = await this.motorRepository.findOne({ where: { motor_id: bookingDto.motor_id } });
+      const motor = await this.motorRepository.findOne({
+        where: { motor_id: bookingDto.motor_id },
+      });
       if (!motor) {
         throw new NotFoundException('Motor not found');
       }
-  
-      const createBooking = this.bookingRepository.create({ ...bookingDto, motor });
+
+      const createBooking = this.bookingRepository.create({
+        ...bookingDto,
+        motor,
+      });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {
       console.error('Booking creation error:', error);
-      throw new HttpException('Error creating booking', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error creating booking',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-  
 }
