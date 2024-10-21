@@ -30,12 +30,12 @@ export class AuthServiceLogin {
       throw new ForbiddenException('User is archived and cannot log in');
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
+    console.log('User logged in:', user);
 
     const token = this.jwtService.sign({
       userId: user.user_id,
       email: user.email,
     });
-    console.log('User logged in:', user);
     console.log('Token generated:', token);
     return { user, token };
   }
