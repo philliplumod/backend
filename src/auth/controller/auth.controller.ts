@@ -12,8 +12,8 @@ export class AuthControllerLogin {
   @Post('login')
   async login(
     @Body() authPayLoad: AuthDTO,
-  ): Promise<{ message: string; user: User }> {
-    const user = await this.authServiceLogin.login(authPayLoad);
-    return { message: 'User logged in successfully', user };
+  ): Promise<{ message: string; user: User; token: string }> {
+    const { user, token } = await this.authServiceLogin.login(authPayLoad);
+    return { message: 'User logged in successfully', user, token };
   }
 }

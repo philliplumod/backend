@@ -8,15 +8,17 @@ import { User } from 'src/models/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compare } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthServiceLogin {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
-  async login(authPayLoad: AuthDTO): Promise<User> {
+  async login(authPayLoad: AuthDTO): Promise<{ user: User; token: string }> {
     const { email, password } = authPayLoad;
     const user = await this.userRepository.findOne({
       where: { email },
@@ -29,7 +31,13 @@ export class AuthServiceLogin {
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
 
-    return user;
+    const token = this.jwtService.sign({
+      userId: user.user_id,
+      email: user.email,
+    });
+    console.log('User logged in:', user);
+    console.log('Token generated:', token);
+    return { user, token };
   }
 
   async validatePassword(
