@@ -20,19 +20,26 @@ export class Booking {
   return_date: string;
 
   @Column()
-  booking_status: boolean;
+  booking_status: string;
 
   @Column()
-  helmet: boolean;
+  free_helmet: string;
 
   @Column()
-  second_helmet: boolean;
+  second_helmet: string;
 
   @Column()
-  phone_folder: boolean;
+  phone_holder: string;
+
 
   @Column()
-  extra_storage: boolean;
+  total_amount: number;
+
+  @Column()
+  days: string;
+
+  @Column()
+  extra_storage: string;
 
   @Column()
   payment_method: string;
