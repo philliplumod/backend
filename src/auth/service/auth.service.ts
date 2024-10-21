@@ -22,7 +22,7 @@ export class AuthServiceLogin {
     const { email, password } = authPayLoad;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['user_id', 'email', 'password', 'role', 'status'],
+      //   select: ['user_id', 'email', 'password', 'role', 'status'],
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -30,7 +30,7 @@ export class AuthServiceLogin {
       throw new ForbiddenException('User is archived and cannot log in');
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
-    console.log('User logged in:', user);
+    // console.log('User logged in:', user);
 
     const token = this.jwtService.sign({
       userId: user.user_id,
