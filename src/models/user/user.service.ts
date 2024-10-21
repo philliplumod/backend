@@ -11,7 +11,6 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/user.create.dto';
 import { compare, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/user.update.dto';
-import { LoginUserDto } from './dto/user.login.dto';
 
 @Injectable()
 export class UserService {
@@ -61,32 +60,6 @@ export class UserService {
     };
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<User> {
-    const { email, password } = loginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: ['user_id', 'email', 'password', 'role', 'status'],
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (user.status === false) {
-      throw new ForbiddenException('User is archived and cannot log in');
-    }
-
-    const isValidPassword = await this.validatePassword(
-      password,
-      user.password,
-    );
-    if (!isValidPassword) {
-      throw new NotFoundException('Incorrect password');
-    }
-
-    return user;
-  }
-
   async updateUser(
     user_id: string,
     updateUserDto: UpdateUserDto,
@@ -125,13 +98,6 @@ export class UserService {
       throw new NotFoundException('No users found');
     }
     return users;
-  }
-
-  async validatePassword(
-    password: string,
-    storedPassword: string,
-  ): Promise<boolean> {
-    return await compare(password, storedPassword);
   }
 
   async archiveUser(user_id: string): Promise<void> {
