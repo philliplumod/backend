@@ -33,9 +33,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Motorcycle Rental API')
     .setDescription('The Motorcycle Rental API description')
-    .addBearerAuth()
+    .addBearerAuth({ in: 'header', type: 'http' })
     .build();
-
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
