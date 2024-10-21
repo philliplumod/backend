@@ -18,7 +18,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
-  @Post()
+  @Post('book')
   async createBooking(@Body() bookingDto: BookingDto): Promise<Booking> {
     try {
       return this.bookingService.createBooking(bookingDto);
