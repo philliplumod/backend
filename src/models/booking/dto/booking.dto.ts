@@ -21,8 +21,8 @@ export class BookingDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  days: string;
+  @IsNumber()
+  days: number;
 
   @ApiProperty()
   @IsNotEmpty()

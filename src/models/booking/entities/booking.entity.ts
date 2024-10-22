@@ -31,12 +31,11 @@ export class Booking {
   @Column()
   phone_holder: string;
 
-
   @Column()
   total_amount: number;
 
   @Column()
-  days: string;
+  days: number;
 
   @Column()
   extra_storage: string;

@@ -10,24 +10,23 @@ import { Request } from 'express';
 @ApiTags('auth')
 @Controller('auth')
 @ApiBearerAuth()
-
 export class AuthControllerLogin {
   constructor(private readonly authServiceLogin: AuthServiceLogin) {}
 
-  //   @Post('login')
-  //   @UseGuards(LocalGuard)
-  //   async login(
-  //     @Body() authPayLoad: AuthDTO,
-  //   ): Promise<{ message: string; user: User; token: string }> {
-  //     const { user, token } = await this.authServiceLogin.login(authPayLoad);
-  //     return { message: 'User logged in successfully', user, token };
-  //   }
+    @Post('login')
+    @UseGuards(LocalGuard)
+    async login(
+      @Body() authPayLoad: AuthDTO,
+    ): Promise<{ message: string; user: User; token: string }> {
+      const { user, token } = await this.authServiceLogin.login(authPayLoad);
+      return { message: 'User logged in successfully', user, token };
+    }
 
-  @Post('login')
-  @UseGuards(LocalGuard)
-  async login(@Req() req: Request): Promise<{ user: User }> {
-    return { user: req.user as User };
-  }
+  // @Post('login')
+  // @UseGuards(LocalGuard)
+  // async login(@Req() req: Request): Promise<{ user: User }> {
+  //   return req.user;
+  // }
 
   @Get('status')
   @UseGuards(JwtAuthGuard)
