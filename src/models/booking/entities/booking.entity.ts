@@ -26,7 +26,7 @@ export class Booking {
   free_helmet: string;
 
   @Column()
-  second_helmet: string;
+  secondxxx_helmet: string;
 
   @Column()
   phone_holder: string;
