@@ -7,6 +7,7 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
@@ -45,4 +46,19 @@ export class BookingController {
     }
   }
   
+  @Put('book/:booking_id')
+  async updateBooking(
+    @Param('booking_id') booking_id: string,
+    @Body() bookingDto: BookingDto,
+  ): Promise<Booking> {
+    try {
+      return this.bookingService.updateBooking(booking_id, bookingDto);
+    } catch (error) {
+      console.error('Error in updateBooking:', error);
+      throw new HttpException(
+        error.message || 'Error updating booking',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

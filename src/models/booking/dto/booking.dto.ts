@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsUUID,
   IsNumber,
+  IsOptional,
 } from 'class-validator';
 
 export class BookingDto {
@@ -59,12 +60,12 @@ export class BookingDto {
   payment_method: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsUUID()
   motor_id: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsUUID()
   user_id: string; // Add this line
 }

@@ -66,4 +66,21 @@ export class BookingService {
       );
     }
   }
+
+  async updateBooking(
+    booking_id: string,
+    bookingDto: BookingDto,
+  ): Promise<Booking> {
+    const book = await this.bookingRepository.findOne({
+      where: { booking_id },
+    });
+
+    if (!book) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    Object.assign(book, bookingDto);
+
+    return await this.bookingRepository.save(book);
+  }
 }
