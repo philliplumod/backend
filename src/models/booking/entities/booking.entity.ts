@@ -1,4 +1,5 @@
 import { Motor } from 'src/models/motor/entities/motor.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import {
   Column,
   Entity,
@@ -26,7 +27,7 @@ export class Booking {
   free_helmet: string;
 
   @Column()
-  secondxxx_helmet: string;
+  second_helmet: string;
 
   @Column()
   phone_holder: string;
@@ -43,7 +44,13 @@ export class Booking {
   @Column()
   payment_method: string;
 
-  @OneToOne(() => Motor, (motor) => motor.motor_id)
+  @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;
+
+  @ManyToOne(() => User, (user) => user.user_id)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  
 }

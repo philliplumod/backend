@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsDate,
   IsDateString,
   IsNotEmpty,
   IsUUID,
@@ -63,4 +62,9 @@ export class BookingDto {
   @IsNotEmpty()
   @IsUUID()
   motor_id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
+  user_id: string; // Add this line
 }

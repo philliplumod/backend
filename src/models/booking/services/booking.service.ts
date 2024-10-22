@@ -31,9 +31,17 @@ export class BookingService {
         throw new NotFoundException('Motor not found');
       }
 
+      const user = await this.userRepository.findOne({
+        where: { user_id: bookingDto.user_id },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
       const createBooking = this.bookingRepository.create({
         ...bookingDto,
         motor,
+        user,
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {
