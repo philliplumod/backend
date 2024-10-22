@@ -31,4 +31,18 @@ export class BookingController {
       );
     }
   }
+
+  @Get('bookings')
+  async getAllBookings(): Promise<Booking[]> {
+    try {
+      return this.bookingService.getAllBookings();
+    } catch (error) {
+      console.error('Error in getAllBookings:', error);
+      throw new HttpException(
+        error.message || 'Error fetching bookings',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
 }

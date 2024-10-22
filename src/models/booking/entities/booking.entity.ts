@@ -48,9 +48,7 @@ export class Booking {
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;
 
-  @ManyToOne(() => User, (user) => user.user_id)
+  @ManyToOne(() => User, (user_id) => user_id)
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  
 }

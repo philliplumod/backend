@@ -52,4 +52,18 @@ export class BookingService {
       );
     }
   }
+
+  async getAllBookings(): Promise<Booking[]> {
+    try {
+      return await this.bookingRepository.find({
+        relations: ['motor', 'user'],
+      });
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+      throw new HttpException(
+        'Error fetching bookings',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
