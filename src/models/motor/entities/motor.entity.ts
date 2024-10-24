@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { MotorBrand } from './motor.brand.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -36,6 +37,9 @@ export class Motor {
 
   @Column()
   isDelete: boolean;
+
+  @CreateDateColumn()
+  created_at: Date;
 
   // Foreign key relationship with MotorBrand
   @ManyToOne(() => MotorBrand, (motorBrand) => motorBrand.motors)

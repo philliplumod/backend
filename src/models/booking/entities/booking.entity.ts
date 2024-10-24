@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'tbl_booking' })
@@ -43,6 +44,9 @@ export class Booking {
 
   @Column()
   payment_method: string;
+
+  @CreateDateColumn()
+  created_at: Date;
 
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
