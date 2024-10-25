@@ -36,6 +36,9 @@ export class User {
   gender: string;
 
   @Column()
+  profile_pic: string;
+
+  @Column()
   license_no: string;
 
   @Column()
@@ -49,6 +52,7 @@ export class User {
 
   @Column()
   other_id_no: string;
+  
 
   @CreateDateColumn()
   created_at: Date;

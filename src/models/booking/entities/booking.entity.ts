@@ -48,6 +48,18 @@ export class Booking {
   @CreateDateColumn()
   created_at: Date;
 
+  @Column()
+  reference_link: string;
+
+  @Column()
+  remark: string;
+
+  @Column()
+  paid_status: string;
+
+  @Column()
+  return_status: string;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;

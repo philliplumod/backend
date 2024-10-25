@@ -32,6 +32,11 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  profile_pic: string;
+
+  @ApiProperty()
+  @IsOptional()
   status: boolean = true;
 
   @ApiProperty()

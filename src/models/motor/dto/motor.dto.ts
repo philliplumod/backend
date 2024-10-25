@@ -49,9 +49,29 @@ export class MotorDto {
   @IsBoolean()
   isDelete: boolean;
 
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  cubic_capacity: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  helmet_price: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  storage_price: number;
+
   // brand_id to select the motor brand
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()
   brand_id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
+  category_id: string;
 }

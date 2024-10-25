@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Motor } from './motor.entity';
 
 @Entity('tbl_motor_category')
 export class MotorCategory {
@@ -10,4 +17,7 @@ export class MotorCategory {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @OneToMany(() => Motor, (motor) => motor.motorCategory)
+  motors: Motor[];
 }

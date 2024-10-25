@@ -35,6 +35,27 @@ export class BookingDto {
   booking_status: string;
 
   @ApiProperty()
+  @IsOptional()
+  @IsString()
+  reference_link: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  remark: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  paid_status: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  return_status: string;
+
+
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   free_helmet: string;
