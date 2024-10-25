@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MotorCategory } from '../entities/motor.category.entity';
 import { Repository } from 'typeorm';
@@ -35,5 +40,39 @@ export class MotorCategoryService {
         where: { category_name },
       })
       .then((category) => !!category);
+  }
+
+  getMotorCategories(): Promise<MotorCategory[]> {
+    return this.motorCategoryRepository.find();
+  }
+
+  async updateMotorCategory(
+    category_id: string,
+    updateMotorCategoryDto: MotorCategoryDto,
+  ): Promise<MotorCategory> {
+    const { category_name } = updateMotorCategoryDto;
+
+    // Check if the motor category to be updated exists
+    const motorCategory = await this.motorCategoryRepository.findOne({
+      where: { category_id },
+    });
+    if (!motorCategory) {
+      throw new NotFoundException(
+        `Motor category with ID "${category_id}" not found.`,
+      );
+    }
+
+    if (motorCategory.category_name === category_name) {
+      const categoryExists = await this.doesCategoryExist(category_name);
+      if (categoryExists) {
+        throw new ConflictException(
+          `Motor category "${category_name}" already exists.`,
+        );
+      }
+    }
+
+    // Update the motor category
+    motorCategory.category_name = category_name;
+    return this.motorCategoryRepository.save(motorCategory);
   }
 }
