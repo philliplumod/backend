@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Motor } from './motor.entity';
 
-@Entity({ name: 'tbl_motor_brand' })
+@Entity('tbl_motor_brand')
 export class MotorBrand {
   @PrimaryGeneratedColumn('uuid')
   brand_id: string;
