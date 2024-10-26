@@ -43,6 +43,14 @@ export class AuthController {
     return this.userService.getActiveUser();
   }
 
+  @Get(':id')
+  async getUserById(
+    @Param('id') id: string,
+  ): Promise<{ message: string; user: User }> {
+    const user = await this.userService.getUserById(id);
+    return { message: 'User found', user };
+  }
+
   @Get('users/inactive')
   async getInActiveUser(): Promise<User[]> {
     return this.userService.getInActiveUser();
