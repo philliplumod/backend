@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -40,6 +41,11 @@ export class MotorCategoryController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Delete(':id')
+  async deleteCategory(@Param('id') id: string): Promise<{ message: string }> {
+    return this.motorCategoryService.deleteCategory(id);
   }
 
   @Put('update/:id')

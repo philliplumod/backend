@@ -34,7 +34,7 @@ export class MotorCategoryService {
     return this.motorCategoryRepository.save(newCategory);
   }
 
-  doesCategoryExist(category_name: string): Promise<boolean> {
+  async doesCategoryExist(category_name: string): Promise<boolean> {
     return this.motorCategoryRepository
       .findOne({
         where: { category_name },
@@ -42,8 +42,23 @@ export class MotorCategoryService {
       .then((category) => !!category);
   }
 
-  getMotorCategories(): Promise<MotorCategory[]> {
+  async getMotorCategories(): Promise<MotorCategory[]> {
     return this.motorCategoryRepository.find();
+  }
+
+  async deleteCategory(category_id: string): Promise<{ message: string }> {
+    const category = await this.motorCategoryRepository.findOne({
+      where: { category_id },
+    });
+    if (!category) {
+      throw new NotFoundException(
+        `Motor category with ID "${category_id}" not found.`,
+      );
+    }
+    category.isArchived = true;
+    await this.motorCategoryRepository.save(category);
+
+    return { message: `Motor category with ID "${category_id}" deleted.` };
   }
 
   async updateMotorCategory(

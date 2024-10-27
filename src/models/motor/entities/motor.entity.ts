@@ -51,6 +51,8 @@ export class Motor {
   @CreateDateColumn()
   created_at: Date;
 
+
+
   // Foreign key relationship with MotorBrand
   @ManyToOne(() => MotorBrand, (motorBrand) => motorBrand.motors)
   @JoinColumn({ name: 'brand_id' }) // foreign key in the tbl_motor table
