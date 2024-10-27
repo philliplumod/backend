@@ -7,6 +7,7 @@ import { BookingModule } from './models/booking/booking.module';
 import { dataSourceOptions } from 'db/data-source';
 import { logger } from './middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
+import { BlockModule } from './models/block/block.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     MotorModule,
     BookingModule,
     AuthModule,
+    BlockModule
   ],
 })
 export class AppModule implements NestModule {

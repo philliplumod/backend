@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'tbl_user' })
 export class User {
@@ -52,7 +58,9 @@ export class User {
 
   @Column()
   other_id_no: string;
-  
+
+  @Column()
+  isBlocked: boolean;
 
   @CreateDateColumn()
   created_at: Date;

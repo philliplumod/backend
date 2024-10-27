@@ -26,8 +26,10 @@ export class AuthServiceLogin {
     });
 
     if (!user) throw new NotFoundException('User not found');
-    if (!user.status)
-      throw new ForbiddenException('User is archived and cannot log in');
+    if (!user.status || user.isBlocked)
+      throw new ForbiddenException(
+        'User is archived or blocked and cannot log in',
+      );
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
     // console.log('User logged in:', user);
