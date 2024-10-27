@@ -86,6 +86,15 @@ export class UserService {
     }
   }
 
+  async getAllUser(): Promise<User[]>{
+    const users = await this.userRepository.find();
+    if (users.length === 0) {
+      throw new NotFoundException('No users found');
+    }
+    return users;       
+  }
+
+
   async getActiveUser(): Promise<User[]> {
     const users = await this.userRepository.find({ where: { status: true } });
     if (users.length === 0) {

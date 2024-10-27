@@ -43,6 +43,11 @@ export class AuthController {
     return this.userService.getActiveUser();
   }
 
+  @Get('users/all')
+  async getAllUser(): Promise<User[]> {
+    return this.userService.getAllUser();
+  }
+
   @Get(':id')
   async getUserById(
     @Param('id') id: string,
