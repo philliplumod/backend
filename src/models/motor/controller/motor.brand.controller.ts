@@ -41,6 +41,11 @@ export class MotorBrandController {
     }
   }
 
+  @Get(':id')
+  async getMotorBrandById(@Param('id') brand_id: string): Promise<MotorBrand> {
+    return this.motorBrandService.getMotorBrandById(brand_id);
+  }
+
   // New PUT method for updating a motor brand
   @Put('update/:id')
   async updateMotorBrand(

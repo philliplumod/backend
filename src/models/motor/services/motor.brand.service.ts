@@ -26,6 +26,18 @@ export class MotorBrandService {
     return this.motorBrandRepository.find();
   }
 
+  async getMotorBrandById(brand_id: string): Promise<MotorBrand> {
+    const brand = await this.motorBrandRepository.findOne({
+      where: { brand_id },
+    });
+    if (!brand) {
+      throw new NotFoundException(
+        `Motor brand with ID "${brand_id}" not found.`,
+      );
+    }
+    return brand;
+  }
+
   async createMotorBrand(
     createMotorBrandDto: MotorBrandDto,
   ): Promise<MotorBrand> {

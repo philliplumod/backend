@@ -77,12 +77,12 @@ export class MotorService {
         );
       }
 
-      motor.motorBrand = motorBrand; 
+      motor.motorBrand = motorBrand;
     }
 
     // Merge the rest of the fields
     Object.assign(motor, updateMotorDto);
-    return this.motorRepository.save(motor); 
+    return this.motorRepository.save(motor);
   }
 
   async getVisibleMotors(): Promise<Motor[]> {
@@ -99,8 +99,8 @@ export class MotorService {
       throw new NotFoundException(`Motor with ID ${motor_id} not found`);
     }
 
-    motor.isDelete = true; 
-    await this.motorRepository.save(motor); 
+    motor.isDelete = true;
+    await this.motorRepository.save(motor);
 
     return { message: 'Motor archived successfully' };
   }
@@ -110,5 +110,18 @@ export class MotorService {
       where: { isDelete: true }, // Get only archived motors
       relations: ['motorBrand'],
     });
+  }
+
+  async getMotorById(motor_id: string): Promise<Motor> {
+    const motor = await this.motorRepository.findOne({
+      where: { motor_id },
+      relations: ['motorBrand'],
+    });
+
+    if (!motor) {
+      throw new NotFoundException(`Motor with ID ${motor_id} not found`);
+    }
+
+    return motor;
   }
 }

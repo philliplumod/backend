@@ -43,6 +43,18 @@ export class MotorController {
     }
   }
 
+  @Get(':id')
+  async getMotorById(@Param('id') id: string): Promise<Motor> {
+    try {
+      return this.motorService.getMotorById(id);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error fetching motor',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Put(':id')
   async updateMotor(
     @Body() updateMotorDto: MotorDto,
