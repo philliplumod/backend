@@ -45,6 +45,21 @@ export class BlockService {
     }
   }
 
+
+
+  async getBlockById(block_id: string): Promise<Block> {
+    const block = await this.blockRepository.findOne({
+      where: { block_id },
+      relations: ['user'],
+    });
+
+    if (!block) {
+      throw new NotFoundException('Block not found');
+    }
+
+    return block;
+  }
+
   async unblockRenter(block_id: string): Promise<User> {
     const block = await this.blockRepository.findOne({
       where: { block_id },

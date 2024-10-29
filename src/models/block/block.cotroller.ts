@@ -45,6 +45,19 @@ export class BlockController {
     }
   }
 
+  @Get(':block_id')
+  async getBlockById(@Param('block_id') block_id: string): Promise<Block> {
+    try {
+      return this.blockService.getBlockById(block_id);
+    } catch (error) {
+      console.error('Error in getBlockById:', error);
+      throw new HttpException(
+        error.message || 'Error fetching block',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Put(':block_id')
   async unblockRenter(@Param('block_id') block_id: string): Promise<User> {
     try {
