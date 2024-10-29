@@ -54,7 +54,9 @@ export class BookingService {
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    const bookings = await this.bookingRepository.find();
+    const bookings = await this.bookingRepository.find({
+      relations: ['motor', 'user'],
+    });
     if (bookings.length === 0) {
       throw new NotFoundException('No bookings found');
     }
