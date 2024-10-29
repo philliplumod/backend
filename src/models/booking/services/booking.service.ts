@@ -32,7 +32,7 @@ export class BookingService {
       }
 
       const user = await this.userRepository.findOne({
-        where: { user_id: bookingDto.user_id },
+        where: { user_id: bookingDto.user_id }
       });
       if (!user) {
         throw new NotFoundException('User not found');
@@ -65,7 +65,8 @@ export class BookingService {
 
   async getBookingById(booking_id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
-      where: { booking_id }
+      where: { booking_id },
+      relations: ['motor', 'user'],
     });
 
     if (!booking) {
