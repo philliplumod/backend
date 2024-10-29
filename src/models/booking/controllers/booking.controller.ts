@@ -33,6 +33,19 @@ export class BookingController {
     }
   }
 
+  @Get(':id')
+  async getBookingById(@Param('id') id: string): Promise<Booking> {
+    try {
+      return this.bookingService.getBookingById(id);
+    } catch (error) {
+      console.error('Error in getBookingById:', error);
+      throw new HttpException(
+        error.message || 'Error fetching booking',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get('bookings')
   async getAllBookings(): Promise<Booking[]> {
     try {
@@ -45,7 +58,7 @@ export class BookingController {
       );
     }
   }
-  
+
   @Put('book/:booking_id')
   async updateBooking(
     @Param('booking_id') booking_id: string,

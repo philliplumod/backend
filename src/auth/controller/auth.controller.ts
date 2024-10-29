@@ -22,11 +22,6 @@ export class AuthControllerLogin {
     return { message: 'User logged in successfully', user, token };
   }
 
-  // @Post('login')
-  // @UseGuards(LocalGuard)
-  // async login(@Req() req: Request): Promise<{ user: User }> {
-  //   return req.user;
-  // }
 
   @Get('status')
   @UseGuards(JwtAuthGuard)
@@ -34,4 +29,7 @@ export class AuthControllerLogin {
     console.log('User status:', req.user);
     return { user: req.user };
   }
+
+  
+
 }

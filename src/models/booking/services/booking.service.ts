@@ -67,6 +67,19 @@ export class BookingService {
     }
   }
 
+  async getBookingById(booking_id: string): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    return booking;
+  }
+
   async updateBooking(
     booking_id: string,
     bookingDto: BookingDto,
