@@ -46,7 +46,7 @@ export class BookingController {
     }
   }
 
-  @Get('bookings')
+  @Get()
   async getAllBookings(): Promise<Booking[]> {
     try {
       return this.bookingService.getAllBookings();

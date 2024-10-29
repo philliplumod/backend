@@ -54,23 +54,16 @@ export class BookingService {
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    try {
-      return await this.bookingRepository.find({
-        relations: ['motor', 'user'],
-      });
-    } catch (error) {
-      console.error('Error fetching bookings:', error);
-      throw new HttpException(
-        'Error fetching bookings',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const bookings = await this.bookingRepository.find();
+    if (bookings.length === 0) {
+      throw new NotFoundException('No bookings found');
     }
+    return bookings;
   }
 
   async getBookingById(booking_id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
-      where: { booking_id },
-      relations: ['motor', 'user'],
+      where: { booking_id }
     });
 
     if (!booking) {
