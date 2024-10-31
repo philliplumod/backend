@@ -24,7 +24,7 @@ export class MotorController {
     return this.motorService.createMotor(motorDto);
   }
 
-  @Get('motors')
+  @Get()
   async getMotors(): Promise<{ message: string; motors: Motor[] }> {
     try {
       const motors = await this.motorService.getMotors();
@@ -55,7 +55,7 @@ export class MotorController {
     }
   }
 
-  @Put(':id')
+  @Put('update/:id')
   async updateMotor(
     @Body() updateMotorDto: MotorDto,
     @Param('id') id: string,
@@ -72,7 +72,7 @@ export class MotorController {
     };
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   async deleteMotor(@Param('id') id: string): Promise<{ message: string }> {
     return this.motorService.deleteMotor(id);
   }

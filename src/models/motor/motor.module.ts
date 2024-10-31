@@ -1,7 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MotorBrand } from './entities/motor.brand.entity';
-import { MotorBrandService } from './services/motor.brand.service';
-import { MotorBrandController } from './controller/motor.brand.controller';
 import { Motor } from './entities/motor.entity';
 import { MotorController } from './controller/motor.controller';
 import { MotorService } from './services/motor.service';
@@ -11,8 +8,8 @@ import { MotorCategoryService } from './services/motor.category.service';
 import { MotorCategoryController } from './controller/motor.category.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MotorBrand, Motor, MotorCategory])],
-  providers: [MotorBrandService, MotorService, MotorCategoryService],
-  controllers: [MotorBrandController, MotorController, MotorCategoryController],
+  imports: [TypeOrmModule.forFeature([Motor, MotorCategory])],
+  providers: [MotorService, MotorCategoryService],
+  controllers: [MotorController, MotorCategoryController],
 })
 export class MotorModule {}

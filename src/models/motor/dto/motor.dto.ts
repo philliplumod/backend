@@ -64,12 +64,6 @@ export class MotorDto {
   @IsNumber()
   storage_price: number;
 
-  // brand_id to select the motor brand
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsUUID()
-  brand_id: string;
-
   @ApiProperty()
   @IsNotEmpty()
   @IsUUID()

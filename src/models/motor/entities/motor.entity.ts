@@ -6,8 +6,6 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { MotorBrand } from './motor.brand.entity';
-import { ApiProperty } from '@nestjs/swagger';
 import { MotorCategory } from './motor.category.entity';
 
 @Entity({ name: 'tbl_motor' })
@@ -50,13 +48,6 @@ export class Motor {
 
   @CreateDateColumn()
   created_at: Date;
-
-
-
-  // Foreign key relationship with MotorBrand
-  @ManyToOne(() => MotorBrand, (motorBrand) => motorBrand.motors)
-  @JoinColumn({ name: 'brand_id' }) // foreign key in the tbl_motor table
-  motorBrand: MotorBrand;
 
   @ManyToOne(() => MotorCategory, (motorCategory) => motorCategory.motors)
   @JoinColumn({ name: 'category_id' })

@@ -27,7 +27,7 @@ export class MotorCategoryController {
       createMotorCategoryDto,
     );
   }
-  @Get('categories')
+  @Get()
   async getMotorCategories(): Promise<MotorCategory[] | { message: string }> {
     try {
       const categories = await this.motorCategoryService.getMotorCategories();
