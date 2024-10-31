@@ -40,6 +40,7 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
   contact_no: string;
 
   @ApiProperty()

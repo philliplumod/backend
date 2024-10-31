@@ -25,7 +25,7 @@ export class AuthServiceLogin {
     });
 
     if (!user) throw new NotFoundException('User not found');
-    if (!user.status || user.isBlocked)
+    if (user.status || user.isBlocked)
       throw new ForbiddenException(
         'User is archived or blocked and cannot log in',
       );
