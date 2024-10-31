@@ -35,6 +35,11 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
+  isBlocked: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   @IsString()
   role: string;
 

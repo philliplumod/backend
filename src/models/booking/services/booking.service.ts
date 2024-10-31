@@ -32,7 +32,7 @@ export class BookingService {
       }
 
       const user = await this.userRepository.findOne({
-        where: { user_id: bookingDto.user_id }
+        where: { user_id: bookingDto.user_id },
       });
       if (!user) {
         throw new NotFoundException('User not found');
@@ -82,6 +82,7 @@ export class BookingService {
   ): Promise<Booking> {
     const book = await this.bookingRepository.findOne({
       where: { booking_id },
+      relations: ['motor', 'user'],
     });
 
     if (!book) {
@@ -90,6 +91,34 @@ export class BookingService {
 
     Object.assign(book, bookingDto);
 
-    return await this.bookingRepository.save(book);
+    await this.bookingRepository.save(book);
+
+    return await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+  }
+
+  async returnMotor(
+    booking_id: string,
+    bookingDto: BookingDto,
+  ): Promise<Booking> {
+    const book = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!book) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    book.return_status = bookingDto.return_status;
+
+    await this.bookingRepository.save(book);
+
+    return await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
   }
 }

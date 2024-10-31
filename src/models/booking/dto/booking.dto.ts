@@ -54,7 +54,6 @@ export class BookingDto {
   @IsString()
   return_status: string;
 
-
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
