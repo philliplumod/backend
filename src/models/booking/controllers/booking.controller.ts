@@ -74,4 +74,20 @@ export class BookingController {
       );
     }
   }
+
+  @Put('return/:booking_id')
+  async returnMotor(
+    @Param('booking_id') booking_id: string,
+    @Body() bookingDto: BookingDto,
+  ): Promise<Booking> {
+    try {
+      return this.bookingService.returnMotor(booking_id, bookingDto);
+    } catch (error) {
+      console.error('Error in returnMotor:', error);
+      throw new HttpException(
+        error.message || 'Error returning motor',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

@@ -98,4 +98,27 @@ export class BookingService {
       relations: ['motor', 'user'],
     });
   }
+
+  async returnMotor(
+    booking_id: string,
+    bookingDto: BookingDto,
+  ): Promise<Booking> {
+    const book = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!book) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    book.return_status = bookingDto.return_status;
+
+    await this.bookingRepository.save(book);
+
+    return await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+  }
 }
