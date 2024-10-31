@@ -11,7 +11,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateUserDto {
   @ApiProperty()
   @IsOptional()
-  @IsEmail()
   email: string;
 
   @ApiProperty()
@@ -41,7 +40,6 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsPhoneNumber()
   contact_no: string;
 
   @ApiProperty()

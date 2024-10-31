@@ -29,7 +29,7 @@ export class AuthController {
     return { message: 'User created successfully', user };
   }
 
-  @Put(':id')
+  @Put('update/:id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
