@@ -41,7 +41,6 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsPhoneNumber()
   contact_no: string;
 
   @ApiProperty()
