@@ -21,15 +21,6 @@ import { Request, Response } from 'express';
 export class AuthControllerLogin {
   constructor(private readonly authServiceLogin: AuthServiceLogin) {}
 
-  // @Post('login')
-  // @UseGuards(LocalGuard)
-  // async login(
-  //   @Body() authPayLoad: AuthDTO,
-  // ): Promise<{ message: string; user: User; token: string }> {
-  //   const { user, token } = await this.authServiceLogin.login(authPayLoad);
-  //   return { message: 'User logged in successfully', user, token };
-  // }
-
   @Post('login')
   @UseGuards(LocalGuard)
   async login(

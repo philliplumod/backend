@@ -7,7 +7,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: (req: Request) => {
-        return req?.cookies?.token || null; // Changed 'jwt' to 'token'
+        return req?.cookies?.jwt; // Changed 'jwt' to 'token'
       },
       ignoreExpiration: false,
       secretOrKey: 'secret',

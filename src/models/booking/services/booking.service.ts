@@ -82,6 +82,7 @@ export class BookingService {
   ): Promise<Booking> {
     const book = await this.bookingRepository.findOne({
       where: { booking_id },
+      relations: ['motor', 'user'],
     });
 
     if (!book) {
@@ -90,6 +91,11 @@ export class BookingService {
 
     Object.assign(book, bookingDto);
 
-    return await this.bookingRepository.save(book);
+    await this.bookingRepository.save(book);
+
+    return await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
   }
 }
