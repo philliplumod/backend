@@ -22,14 +22,10 @@ export class AuthControllerLogin {
     return { message: 'User logged in successfully', user, token };
   }
 
-
   @Get('status')
   @UseGuards(JwtAuthGuard)
   status(@Req() req: Request): { user: any } {
     console.log('User status:', req.user);
     return { user: req.user };
   }
-
-  
-
 }
