@@ -5,8 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpErrorFilter } from './handler/http-error.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { logger } from './middlewares/logger.middleware';
-import { consumers } from 'stream';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   dotenv.config();
@@ -21,6 +20,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.use(cookieParser());
 
   app.enableCors({
     origin: 'http://localhost:4200',

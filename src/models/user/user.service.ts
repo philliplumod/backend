@@ -31,7 +31,9 @@ export class UserService {
       const hashedPassword = await hash(createUserDto.password, 10);
       const newUser = this.userRepository.create({
         ...createUserDto,
-        password: hashedPassword, // Store the hashed password
+        password: hashedPassword,
+        isBlocked: false,
+        status: false,
       });
       console.log('New user entity created:', newUser);
 
@@ -60,8 +62,6 @@ export class UserService {
     };
   }
 
-
-
   async updateUser(
     user_id: string,
     updateUserDto: UpdateUserDto,
@@ -86,14 +86,13 @@ export class UserService {
     }
   }
 
-  async getAllUser(): Promise<User[]>{
+  async getAllUser(): Promise<User[]> {
     const users = await this.userRepository.find();
     if (users.length === 0) {
       throw new NotFoundException('No users found');
     }
-    return users;       
+    return users;
   }
-
 
   async getActiveUser(): Promise<User[]> {
     const users = await this.userRepository.find({ where: { status: true } });

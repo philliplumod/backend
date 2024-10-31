@@ -22,11 +22,10 @@ export class AuthServiceLogin {
     const { email, password } = authPayLoad;
     const user = await this.userRepository.findOne({
       where: { email },
-      //   select: ['user_id', 'email', 'password', 'role', 'status'],
     });
 
     if (!user) throw new NotFoundException('User not found');
-    if (!user.status || user.isBlocked)
+    if (user.status || user.isBlocked)
       throw new ForbiddenException(
         'User is archived or blocked and cannot log in',
       );

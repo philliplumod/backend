@@ -37,10 +37,6 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
-  status: boolean = true;
-
-  @ApiProperty()
-  @IsOptional()
   role: string;
 
   @ApiProperty()

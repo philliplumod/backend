@@ -21,7 +21,7 @@ import { BlockModule } from './models/block/block.module';
     MotorModule,
     BookingModule,
     AuthModule,
-    BlockModule
+    BlockModule,
   ],
 })
 export class AppModule implements NestModule {

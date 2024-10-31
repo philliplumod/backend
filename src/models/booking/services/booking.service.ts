@@ -32,7 +32,7 @@ export class BookingService {
       }
 
       const user = await this.userRepository.findOne({
-        where: { user_id: bookingDto.user_id }
+        where: { user_id: bookingDto.user_id },
       });
       if (!user) {
         throw new NotFoundException('User not found');

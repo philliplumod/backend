@@ -45,8 +45,6 @@ export class BlockService {
     }
   }
 
-
-
   async getBlockById(block_id: string): Promise<Block> {
     const block = await this.blockRepository.findOne({
       where: { block_id },

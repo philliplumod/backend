@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
 } from 'typeorm';
 
@@ -23,7 +22,7 @@ export class User {
   @Column()
   last_name: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   status: boolean;
 
   @Column()
@@ -59,7 +58,7 @@ export class User {
   @Column()
   other_id_no: string;
 
-  @Column()
+  @Column({ default: false })
   isBlocked: boolean;
 
   @CreateDateColumn()
