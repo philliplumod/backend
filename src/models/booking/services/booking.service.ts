@@ -10,6 +10,7 @@ import { User } from '../../user/entities/user.entity';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ReturnStatus } from '../dto/return.booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -99,9 +100,9 @@ export class BookingService {
     });
   }
 
-  async returnMotor(
+  async updateReturnStatus(
     booking_id: string,
-    bookingDto: BookingDto,
+    returnStatus: ReturnStatus,
   ): Promise<Booking> {
     const book = await this.bookingRepository.findOne({
       where: { booking_id },
@@ -112,12 +113,15 @@ export class BookingService {
       throw new NotFoundException('Booking not found');
     }
 
-    book.return_status = bookingDto.return_status;
+    if (returnStatus.return_status !== undefined) {
+      book.return_status = returnStatus.return_status;
+    }
 
     await this.bookingRepository.save(book);
 
     return await this.bookingRepository.findOne({
       where: { booking_id },
+
       relations: ['motor', 'user'],
     });
   }

@@ -12,7 +12,8 @@ import {
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
 import { BookingService } from '../services/booking.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ReturnStatus } from '../dto/return.booking.dto';
 
 @ApiTags('booking')
 @ApiBearerAuth()
@@ -74,18 +75,20 @@ export class BookingController {
       );
     }
   }
-
   @Put('return/:booking_id')
-  async returnMotor(
+  async updateReturnStatus(
     @Param('booking_id') booking_id: string,
-    @Body() bookingDto: BookingDto,
+    @Body() returnStatus: ReturnStatus,
   ): Promise<Booking> {
     try {
-      return this.bookingService.returnMotor(booking_id, bookingDto);
+      return await this.bookingService.updateReturnStatus(
+        booking_id,
+        returnStatus,
+      );
     } catch (error) {
-      console.error('Error in returnMotor:', error);
+      console.error('Error in updateReturnStatus:', error);
       throw new HttpException(
-        error.message || 'Error returning motor',
+        error.message || 'Error updating booking',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
