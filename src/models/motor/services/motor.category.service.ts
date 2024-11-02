@@ -28,9 +28,10 @@ export class MotorCategoryService {
         `Motor category "${category_name}" already exists.`,
       );
     }
-    // Create and save new category if it doesn't exist
-    const newCategory =
-      this.motorCategoryRepository.create(createMotorCategory);
+    const newCategory = this.motorCategoryRepository.create({
+      ...createMotorCategory,
+      isArchived: false,
+    });
     return this.motorCategoryRepository.save(newCategory);
   }
 
