@@ -31,6 +31,7 @@ export class UserService {
       const hashedPassword = await hash(createUserDto.password, 10);
       const newUser = this.userRepository.create({
         ...createUserDto,
+        password: hashedPassword,
         isBlocked: false,
         status: false,
       });

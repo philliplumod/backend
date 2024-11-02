@@ -13,7 +13,7 @@ export class Block {
   @PrimaryGeneratedColumn('uuid')
   block_id: string;
 
-  @Column()
+  @Column({ default: false })
   block_status: boolean;
 
   @Column()
