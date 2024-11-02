@@ -49,7 +49,9 @@ export class Motor {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => MotorCategory, (motorCategory) => motorCategory.motors)
+  @ManyToOne(() => MotorCategory, (motorCategory) => motorCategory.motors, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'category_id' })
   motorCategory: MotorCategory;
 }

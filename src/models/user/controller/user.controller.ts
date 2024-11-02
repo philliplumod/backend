@@ -15,6 +15,7 @@ import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/user.create.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '../dto/user.update.dto';
+import { UpdatePasswordDto } from '../dto/user.change.pass.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -71,5 +72,17 @@ export class AuthController {
   async restoreUser(@Param('id') id: string): Promise<{ message: string }> {
     await this.userService.restoreUser(id);
     return { message: 'User restored successfully' };
+  }
+  @Put('change-password/:id')
+  async changePassword(
+    @Param('id') id: string,
+    @Body() UpdatePasswordDto: UpdatePasswordDto,
+  ): Promise<{ message: string }> {
+    await this.userService.changePassword(
+      id,
+      UpdatePasswordDto.currentPassword,
+      UpdatePasswordDto.newPassword ,
+    );
+    return { message: 'Password changed successfully' };
   }
 }

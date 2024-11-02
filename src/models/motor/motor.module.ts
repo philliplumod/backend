@@ -6,9 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MotorCategory } from './entities/motor.category.entity';
 import { MotorCategoryService } from './services/motor.category.service';
 import { MotorCategoryController } from './controller/motor.category.controller';
+import { Booking } from '../booking/entities/booking.entity';
+import { BookingModule } from '../booking/booking.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Motor, MotorCategory])],
+  imports: [
+    TypeOrmModule.forFeature([Motor, MotorCategory, Booking]),
+    BookingModule,
+  ],
   providers: [MotorService, MotorCategoryService],
   controllers: [MotorController, MotorCategoryController],
 })

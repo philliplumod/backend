@@ -1,19 +1,24 @@
 import {
-  ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MotorCategory } from '../entities/motor.category.entity';
 import { Repository } from 'typeorm';
+import { MotorCategory } from '../entities/motor.category.entity';
 import { MotorCategoryDto } from '../dto/motor.category.dto';
+import { Motor } from '../entities/motor.entity';
+import { Booking } from 'src/models/booking/entities/booking.entity';
 
 @Injectable()
 export class MotorCategoryService {
   constructor(
     @InjectRepository(MotorCategory)
     private readonly motorCategoryRepository: Repository<MotorCategory>,
+    @InjectRepository(Motor)
+    private motorRepository: Repository<Motor>,
+    @InjectRepository(Booking)
+    private bookingRepository: Repository<Booking>,
   ) {}
 
   async createMotorCategory(
@@ -30,7 +35,6 @@ export class MotorCategoryService {
     }
     const newCategory = this.motorCategoryRepository.create({
       ...createMotorCategory,
-      isArchived: false,
     });
     return this.motorCategoryRepository.save(newCategory);
   }
@@ -56,8 +60,25 @@ export class MotorCategoryService {
         `Motor category with ID "${category_id}" not found.`,
       );
     }
-    category.isArchived = true;
-    await this.motorCategoryRepository.save(category);
+
+    // Find related motors
+    const motors = await this.motorRepository.find({
+      where: { motorCategory: category },
+    });
+
+    // Delete related bookings
+    for (const motor of motors) {
+      const bookings = await this.bookingRepository.find({ where: { motor } });
+      for (const booking of bookings) {
+        await this.bookingRepository.remove(booking);
+      }
+    }
+
+    // Delete related motors
+    await this.motorRepository.remove(motors);
+
+    // Delete the category
+    await this.motorCategoryRepository.remove(category);
 
     return { message: `Motor category with ID "${category_id}" deleted.` };
   }

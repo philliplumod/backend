@@ -18,9 +18,6 @@ export class MotorCategory {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ default: false })
-  isArchived: boolean;
-
   @OneToMany(() => Motor, (motor) => motor.motorCategory)
   motors: Motor[];
 }

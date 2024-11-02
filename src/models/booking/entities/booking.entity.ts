@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToOne,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'tbl_booking' })
@@ -60,11 +61,14 @@ export class Booking {
   @Column()
   return_status: string;
 
-  @ManyToOne(() => Motor, (motor) => motor.motor_id)
+  @ManyToOne(() => Motor, (motor) => motor.motor_id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;
 
   @ManyToOne(() => User, (user_id) => user_id)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Booking, (booking) => booking.motor, { cascade: true })
+  bookings: Booking[];
 }

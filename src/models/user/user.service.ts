@@ -131,4 +131,24 @@ export class UserService {
     user.status = false;
     await this.userRepository.save(user);
   }
+
+  async changePassword(
+    user_id: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { user_id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isPasswordValid = await compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      throw new ForbiddenException('Current password is incorrect');
+    }
+
+    user.password = await hash(newPassword, 10);
+    await this.userRepository.save(user);
+  }
 }
