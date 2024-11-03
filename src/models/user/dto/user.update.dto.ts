@@ -30,6 +30,11 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
+  profile_pic: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsBoolean()
   status: boolean;
 
