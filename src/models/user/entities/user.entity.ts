@@ -22,7 +22,7 @@ export class User {
   @Column()
   last_name: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   status: boolean;
 
   @Column()
