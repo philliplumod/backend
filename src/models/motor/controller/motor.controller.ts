@@ -13,6 +13,7 @@ import { MotorService } from '../services/motor.service';
 import { MotorDto } from '../dto/motor.dto';
 import { Motor } from '../entities/motor.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateMotorStatusDto } from '../dto/motor.update.status';
 
 @ApiTags('motor')
 @Controller('motor')
@@ -61,6 +62,14 @@ export class MotorController {
     @Param('id') id: string,
   ): Promise<Motor> {
     return this.motorService.updateMotor(id, updateMotorDto);
+  }
+
+  @Put('update_status/:id')
+  async updateMotorStatus(
+    @Body() updateMotorStatusDto: UpdateMotorStatusDto,
+    @Param('id') id: string,
+  ): Promise<Motor> {
+    return this.motorService.updateMotorStatus(id, updateMotorStatusDto);
   }
 
   @Get('visible')

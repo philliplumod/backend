@@ -8,6 +8,7 @@ import { Motor } from '../entities/motor.entity';
 import { MotorDto } from '../dto/motor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MotorCategory } from '../entities/motor.category.entity';
+import { UpdateMotorStatusDto } from '../dto/motor.update.status';
 
 @Injectable()
 export class MotorService {
@@ -80,6 +81,22 @@ export class MotorService {
 
     // Merge the rest of the fields
     Object.assign(motor, updateMotorDto);
+    return this.motorRepository.save(motor);
+  }
+  async updateMotorStatus(
+    motor_id: string,
+    updateMotorStatusDto: UpdateMotorStatusDto,
+  ): Promise<Motor> {
+    const motor = await this.motorRepository.findOne({
+      where: { motor_id },
+      relations: ['motorCategory'],
+    });
+
+    if (!motor) {
+      throw new NotFoundException(`Motor with ID ${motor_id} not found`);
+    }
+
+    motor.isVisible = updateMotorStatusDto.isVisible;
     return this.motorRepository.save(motor);
   }
 
