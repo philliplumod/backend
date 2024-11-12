@@ -1,12 +1,17 @@
-// import { Controller, Get } from '@nestjs/common';
-// import { AppService } from './app.service';
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
 
-// @Controller('products')
-// export class AppController {
-//   constructor(private readonly appService: AppService) {}
+@Controller() // No path here, so it handles root routes
+export class AppController {
+  constructor(private readonly appService: AppService) {}
 
-//   @Get()
-//   getHello(): string {
-//     return this.appService.getHello();
-//   }
-// }
+  @Get('/')
+  getRoot(): string {
+    return 'Welcome to the Motorcycle Rental API';
+  }
+
+  @Get('/products')
+  getProducts(): string {
+    return this.appService.getHello();
+  }
+}

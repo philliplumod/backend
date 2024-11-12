@@ -8,6 +8,8 @@ import { dataSourceOptions } from 'db/data-source';
 import { logger } from './middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { BlockModule } from './models/block/block.module';
+import { AppController } from './app.controller'; // Import AppController
+import { AppService } from './app.service'; // Import AppService
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { BlockModule } from './models/block/block.module';
     AuthModule,
     BlockModule,
   ],
+  controllers: [AppController], // Register AppController
+  providers: [AppService], // Register AppService
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
