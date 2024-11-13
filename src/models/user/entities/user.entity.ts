@@ -5,6 +5,8 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
+
 @Entity({ name: 'tbl_user' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -13,6 +15,7 @@ export class User {
   @Column()
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
 
