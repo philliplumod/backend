@@ -32,10 +32,11 @@ export class AuthServiceLogin {
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
 
-    const token = this.jwtService.sign({
-      userId: user.user_id,
-      email: user.email,
-    });
+    const token = this.jwtService.sign(
+      { userId: user.user_id, email: user.email },
+      { secret: process.env.JWT_SECRET, expiresIn: '1h' }
+    );
+    
     console.log('Token generated:', token);
     return { user, token };
   }
