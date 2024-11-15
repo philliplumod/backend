@@ -33,6 +33,7 @@ export class UserService {
         ...createUserDto,
         password: hashedPassword,
         isBlocked: false,
+        status: false,
       });
       console.log('New user entity created:', newUser);
 
