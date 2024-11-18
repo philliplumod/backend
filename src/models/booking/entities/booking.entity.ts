@@ -60,6 +60,15 @@ export class Booking {
   @Column()
   return_status: string;
 
+  @Column()
+  start_booking: string;
+
+  @Column()
+  end_booking: string;
+
+  @Column()
+  is_rent: boolean;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;

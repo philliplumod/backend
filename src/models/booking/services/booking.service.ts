@@ -43,6 +43,7 @@ export class BookingService {
         ...bookingDto,
         motor,
         user,
+        is_rent: false,
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {

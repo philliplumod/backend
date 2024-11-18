@@ -86,6 +86,16 @@ export class BookingDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsDateString()
+  start_booking: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsDateString()
+  end_booking: string;
+
+  @ApiProperty()
+  @IsOptional()
   @IsUUID()
   user_id: string; // Add this line
 }
