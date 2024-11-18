@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -152,18 +153,22 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async updateUserRole(user_id: string, role: 'admin' | 'renter'): Promise<void> {
+  async updateUserRole(
+    user_id: string,
+    role: 'admin' | 'renter',
+  ): Promise<User> {
     const user = await this.userRepository.findOne({ where: { user_id } });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (role !== 'admin' && role !== 'renter') {
-      throw new ForbiddenException('Invalid role');
+    if (!['admin', 'renter'].includes(role)) {
+      throw new BadRequestException('Invalid role');
     }
 
     user.role = role;
-    await this.userRepository.save(user);
+    const updatedUser = await this.userRepository.save(user);
+    return updatedUser;
   }
 }

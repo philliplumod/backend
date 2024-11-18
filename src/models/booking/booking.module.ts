@@ -6,9 +6,18 @@ import { User } from '../user/entities/user.entity';
 import { Booking } from './entities/booking.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Motor, User, Booking]), HttpModule],
+  imports: [TypeOrmModule.forFeature([Motor, User, Booking]), MailerModule.forRoot({
+    transport: {
+      host: 'smtp.gmail.com',
+      auth: {
+        user: '',
+        pass: '',
+      }
+    },
+  })],
   controllers: [BookingController],
   providers: [BookingService],
 })

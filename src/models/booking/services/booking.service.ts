@@ -13,6 +13,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ReturnStatus } from '../dto/return.booking.dto';
 import { HttpService } from '@nestjs/axios';
 
+import { MailerService } from '@nestjs-modules/mailer';
+
 @Injectable()
 export class BookingService {
   constructor(
@@ -22,7 +24,7 @@ export class BookingService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Motor)
     private readonly motorRepository: Repository<Motor>,
-    private readonly httpService: HttpService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
@@ -131,39 +133,18 @@ export class BookingService {
   async approveBooking(booking_id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
       where: { booking_id },
-      relations: ['motor', 'user'],
+      relations: ['user'],
     });
 
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
 
-    booking.is_rent = true;
-
-    await this.bookingRepository.save(booking);
-
-    // Prepare data for email notification
-    const data = {
-      service_id: 'service_hr0iks5',
-      template_id: 'template_yuv2r8v',
-      user_id: 'b3IPQc77g2QxADwDq',
-      template_params: {
-        user_name: booking.user,
-        user_email: booking.user.email,
-        message: 'Your booking has been approved. You can now rent the motor.',
-      },
-    };
-
-    // Send email via EmailJS API
-    try {
-      await this.httpService
-        .post('https://api.emailjs.com/api/v1.0/email/send', data, {
-          headers: { 'Content-Type': 'application/json' },
-        })
-        .toPromise();
-    } catch (error) {
-      console.error('Failed to send email:', error);
-    }
+    await this.mailerService.sendMail({
+      to: booking.user.email,
+      subject: 'Booking Approved',
+      text: 'Your booking has been approved.',
+    });
 
     return booking;
   }

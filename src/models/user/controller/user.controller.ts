@@ -16,6 +16,7 @@ import { CreateUserDto } from '../dto/user.create.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '../dto/user.update.dto';
 import { UpdatePasswordDto } from '../dto/user.change.pass.dto';
+import { UpdateUserRoleDto } from '../dto/user.update.role.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -89,9 +90,12 @@ export class AuthController {
   @Put(':id/user-role')
   async updateUserRole(
     @Param('id') id: string,
-    @Body() role: { role: 'admin' | 'renter' },
-  ): Promise<{ message: string }> {
-    await this.userService.updateUserRole(id, role.role);
-    return { message: 'User role updated successfully' };
+    @Body() updateUserRoleDto: UpdateUserRoleDto,
+  ): Promise<{ message: string;}> {
+    await this.userService.updateUserRole(
+      id,
+      updateUserRoleDto.role,
+    );
+    return { message: 'User role updated successfully'};
   }
 }
