@@ -81,8 +81,17 @@ export class AuthController {
     await this.userService.changePassword(
       id,
       UpdatePasswordDto.currentPassword,
-      UpdatePasswordDto.newPassword ,
+      UpdatePasswordDto.newPassword,
     );
     return { message: 'Password changed successfully' };
+  }
+
+  @Put(':id/user-role')
+  async updateUserRole(
+    @Param('id') id: string,
+    @Body() role: { role: 'admin' | 'renter' },
+  ): Promise<{ message: string }> {
+    await this.userService.updateUserRole(id, role.role);
+    return { message: 'User role updated successfully' };
   }
 }

@@ -8,6 +8,7 @@ import {
   HttpException,
   HttpStatus,
   Put,
+  Patch,
 } from '@nestjs/common';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
@@ -94,5 +95,8 @@ export class BookingController {
     }
   }
 
-  
+  @Patch(':id/approve')
+  async approveBooking(@Param('id') booking_id: string): Promise<Booking> {
+    return this.bookingService.approveBooking(booking_id);
+  }
 }

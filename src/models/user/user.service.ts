@@ -151,4 +151,19 @@ export class UserService {
     user.password = await hash(newPassword, 10);
     await this.userRepository.save(user);
   }
+
+  async updateUserRole(user_id: string, role: 'admin' | 'renter'): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { user_id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (role !== 'admin' && role !== 'renter') {
+      throw new ForbiddenException('Invalid role');
+    }
+
+    user.role = role;
+    await this.userRepository.save(user);
+  }
 }
