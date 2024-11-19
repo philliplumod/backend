@@ -69,6 +69,9 @@ export class Booking {
   @Column()
   is_rent: boolean;
 
+  @Column()
+  is_decline: boolean;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;

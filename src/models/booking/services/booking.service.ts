@@ -76,28 +76,28 @@ export class BookingService {
       where: { booking_id },
       relations: ['motor', 'user'],
     });
-  
+
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
-  
+
     const { sender, subject, recipient = [] } = dto;
     const finalRecipient =
       recipient.length > 0
         ? recipient
         : [{ name: booking.user.first_name, address: booking.user.email }];
-  
+
     await this.mailerService.sendMail({
       from: sender || this.configService.get<string>('MAIL_FROM'),
       to: finalRecipient,
       subject: subject || 'Booking Declined',
       text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been declined.`,
     });
-  
-    booking.is_rent = false;
-  
+
+    booking.is_decline = true;
+
     await this.bookingRepository.save(booking);
-  
+
     return booking;
   }
 
@@ -122,6 +122,7 @@ export class BookingService {
         motor,
         user,
         is_rent: false,
+        is_decline: false,
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {

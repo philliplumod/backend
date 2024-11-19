@@ -12,12 +12,23 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/user.create.dto';
 import { compare, hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/user.update.dto';
+import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
+import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
+
+export type SendEmailDTO = {
+  sender?: string | Address;
+  recipient: Address[];
+  subject: string;
+};
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -35,6 +46,7 @@ export class UserService {
         password: hashedPassword,
         isBlocked: false,
         status: false,
+        isVerified: false,
       });
       console.log('New user entity created:', newUser);
 
@@ -49,6 +61,32 @@ export class UserService {
       }
       throw new InternalServerErrorException('Failed to create user');
     }
+  }
+
+  async verifyUser(user_id: string, dto: SendEmailDTO): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { user_id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.isVerified = true;
+    await this.userRepository.save(user);
+
+    const { sender, subject, recipient = [] } = dto;
+    const finalRecipient =
+      recipient.length > 0
+        ? recipient
+        : [{ name: user.first_name, address: user.email }];
+
+    await this.mailerService.sendMail({
+      from: sender || this.configService.get<string>('MAIL_FROM'),
+      to: finalRecipient,
+      subject: subject || 'Account Verified',
+      text: `Hello ${user.first_name}, your account has been verified.`,
+    });
+
+    return user;
   }
 
   async getUserById(user_id: string): Promise<User> {

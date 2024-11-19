@@ -25,10 +25,16 @@ export class AuthServiceLogin {
     });
 
     if (!user) throw new NotFoundException('User not found');
-    if (user.status == false) 
-      throw new ForbiddenException('User is archived and cannot log in');
-    if (user.isBlocked)
-      throw new ForbiddenException('User is blocked and cannot log in');
+
+    switch (true) {
+      case user.status == false:
+        throw new ForbiddenException('User is archived and cannot log in');
+      case user.isBlocked:
+        throw new ForbiddenException('User is blocked and cannot log in');
+      case user.isVerified == false:
+        throw new ForbiddenException('User is not verified and cannot log in');
+    }
+
     if (!(await this.validatePassword(password, user.password)))
       throw new NotFoundException('Incorrect password');
 
@@ -36,7 +42,7 @@ export class AuthServiceLogin {
       { userId: user.user_id, email: user.email },
       { secret: process.env.JWT_SECRET, expiresIn: '1h' }
     );
-    
+
     console.log('Token generated:', token);
     return { user, token };
   }

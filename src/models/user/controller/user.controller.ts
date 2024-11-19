@@ -10,7 +10,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { UserService } from '../user.service';
+import { SendEmailDTO, UserService } from '../user.service';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/user.create.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -91,11 +91,15 @@ export class AuthController {
   async updateUserRole(
     @Param('id') id: string,
     @Body() updateUserRoleDto: UpdateUserRoleDto,
-  ): Promise<{ message: string;}> {
-    await this.userService.updateUserRole(
-      id,
-      updateUserRoleDto.role,
-    );
-    return { message: 'User role updated successfully'};
+  ): Promise<{ message: string }> {
+    await this.userService.updateUserRole(id, updateUserRoleDto.role);
+    return { message: 'User role updated successfully' };
+  }
+  @Put(':id/verify')  
+  async verifyUser(
+    @Param('id') user_id: string,
+    @Body() dto: SendEmailDTO,
+  ): Promise<User> {
+    return this.userService.verifyUser(user_id, dto);
   }
 }
