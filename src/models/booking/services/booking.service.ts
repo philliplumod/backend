@@ -74,7 +74,7 @@ export class BookingService {
   async getBookingById(booking_id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
       where: { booking_id },
-      relations:  ['motor', 'motor.motorCategory', 'user']
+      relations: ['motor', 'motor.motorCategory', 'user'],
     });
 
     if (!booking) {
@@ -132,7 +132,18 @@ export class BookingService {
       relations: ['motor', 'user'],
     });
   }
-  // async approveBooking(booking_id: string): Promise<Booking> {
-  //   return booking;
-  // }
+  async approveBooking(booking_id: string): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    booking.is_rent = true;
+
+    return booking;
+  }
 }
