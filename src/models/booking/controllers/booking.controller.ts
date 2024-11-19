@@ -95,7 +95,7 @@ export class BookingController {
     }
   }
 
-  @Patch(':id/approve')
+  @Put(':id/approve')
   async approveBooking(@Param('id') booking_id: string): Promise<Booking> {
     return this.bookingService.approveBooking(booking_id);
   }
