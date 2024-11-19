@@ -14,6 +14,7 @@ import { ReturnStatus } from '../dto/return.booking.dto';
 import { HttpService } from '@nestjs/axios';
 
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class BookingService {
@@ -25,6 +26,7 @@ export class BookingService {
     @InjectRepository(Motor)
     private readonly motorRepository: Repository<Motor>,
     private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
@@ -61,7 +63,7 @@ export class BookingService {
 
   async getAllBookings(): Promise<Booking[]> {
     const bookings = await this.bookingRepository.find({
-      relations: ['motor', 'user'],
+      relations: ['motor', 'motor.motorCategory', 'user'],
     });
     if (bookings.length === 0) {
       throw new NotFoundException('No bookings found');
@@ -72,7 +74,7 @@ export class BookingService {
   async getBookingById(booking_id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
       where: { booking_id },
-      relations: ['motor', 'user'],
+      relations:  ['motor', 'motor.motorCategory', 'user']
     });
 
     if (!booking) {
@@ -130,22 +132,7 @@ export class BookingService {
       relations: ['motor', 'user'],
     });
   }
-  async approveBooking(booking_id: string): Promise<Booking> {
-    const booking = await this.bookingRepository.findOne({
-      where: { booking_id },
-      relations: ['user'],
-    });
-
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
-
-    await this.mailerService.sendMail({
-      to: booking.user.email,
-      subject: 'Booking Approved',
-      text: 'Your booking has been approved.',
-    });
-
-    return booking;
-  }
+  // async approveBooking(booking_id: string): Promise<Booking> {
+  //   return booking;
+  // }
 }

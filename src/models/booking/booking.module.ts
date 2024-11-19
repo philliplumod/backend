@@ -7,17 +7,30 @@ import { Booking } from './entities/booking.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
+import { use } from 'passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Motor, User, Booking]), MailerModule.forRoot({
-    transport: {
-      host: 'smtp.gmail.com',
-      auth: {
-        user: '',
-        pass: '',
-      }
-    },
-  })],
+  imports: [
+    TypeOrmModule.forFeature([Motor, User, Booking]),
+    MailerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('MAIL_HOST'),
+          port: configService.get('MAIL_PORT'),
+          secure: false,
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: configService.get<string>('MAIL_SENDER'),
+        }
+      }),
+    }),
+  ],
   controllers: [BookingController],
   providers: [BookingService],
 })
