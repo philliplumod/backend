@@ -66,11 +66,14 @@ export class Booking {
   @Column()
   end_booking: string;
 
-  @Column()
+  @Column({ default: false })
   is_rent: boolean;
 
-  @Column()
+  @Column({ default: false })
   is_decline: boolean;
+
+  @Column({ default: false })
+  is_approve: boolean;
 
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })

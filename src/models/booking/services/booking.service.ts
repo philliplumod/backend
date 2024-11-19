@@ -23,6 +23,10 @@ export type SendEmailDTO = {
   subject: string;
 };
 
+export type RentStatus = {
+  is_rent: boolean;
+};
+
 @Injectable()
 export class BookingService {
   constructor(
@@ -61,13 +65,29 @@ export class BookingService {
       text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been approved.`,
     });
 
-    booking.is_rent = true;
+    booking.is_approve = true;
 
     await this.bookingRepository.save(booking);
 
     return booking;
   }
 
+  async isRent(booking_id: string): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    booking.is_rent = true;
+
+    await this.bookingRepository.save(booking);
+
+    return booking;
+  }
   async declineBooking(
     booking_id: string,
     dto: SendEmailDTO,
@@ -123,6 +143,7 @@ export class BookingService {
         user,
         is_rent: false,
         is_decline: false,
+        is_approve: false,
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {
