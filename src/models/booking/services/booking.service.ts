@@ -68,6 +68,39 @@ export class BookingService {
     return booking;
   }
 
+  async declineBooking(
+    booking_id: string,
+    dto: SendEmailDTO,
+  ): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+  
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+  
+    const { sender, subject, recipient = [] } = dto;
+    const finalRecipient =
+      recipient.length > 0
+        ? recipient
+        : [{ name: booking.user.first_name, address: booking.user.email }];
+  
+    await this.mailerService.sendMail({
+      from: sender || this.configService.get<string>('MAIL_FROM'),
+      to: finalRecipient,
+      subject: subject || 'Booking Declined',
+      text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been declined.`,
+    });
+  
+    booking.is_rent = false;
+  
+    await this.bookingRepository.save(booking);
+  
+    return booking;
+  }
+
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
     try {
       const motor = await this.motorRepository.findOne({

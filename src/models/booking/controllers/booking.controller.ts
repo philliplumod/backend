@@ -101,4 +101,12 @@ export class BookingController {
   ): Promise<Booking> {
     return this.bookingService.approveBooking(booking_id, dto);
   }
+
+  @Put(':id/decline')
+  async declineBooking(
+    @Param('id') booking_id: string,
+    @Body() dto: SendEmailDTO,
+  ): Promise<Booking> {
+    return this.bookingService.declineBooking(booking_id, dto);
+  }
 }
