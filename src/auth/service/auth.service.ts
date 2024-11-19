@@ -31,8 +31,6 @@ export class AuthServiceLogin {
         throw new ForbiddenException('User is archived and cannot log in');
       case user.isBlocked:
         throw new ForbiddenException('User is blocked and cannot log in');
-      case user.isVerified == false:
-        throw new ForbiddenException('User is not verified and cannot log in');
     }
 
     if (!(await this.validatePassword(password, user.password)))
@@ -40,7 +38,7 @@ export class AuthServiceLogin {
 
     const token = this.jwtService.sign(
       { userId: user.user_id, email: user.email },
-      { secret: process.env.JWT_SECRET, expiresIn: '1h' }
+      { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
 
     console.log('Token generated:', token);

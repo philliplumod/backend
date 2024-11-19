@@ -46,7 +46,6 @@ export class UserService {
         password: hashedPassword,
         isBlocked: false,
         status: false,
-        isVerified: false,
       });
       console.log('New user entity created:', newUser);
 
@@ -70,7 +69,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    user.isVerified = true;
+    user.status = true;
     await this.userRepository.save(user);
 
     const { sender, subject, recipient = [] } = dto;

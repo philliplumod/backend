@@ -25,7 +25,7 @@ export class User {
   @Column()
   last_name: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   status: boolean;
 
   @Column()
@@ -61,11 +61,8 @@ export class User {
   @Column()
   other_id_no: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   isBlocked: boolean;
-
-  @Column({default: false})
-  isVerified: boolean;
 
   @CreateDateColumn()
   created_at: Date;
