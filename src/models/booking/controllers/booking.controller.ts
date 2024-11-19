@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
-import { BookingService } from '../services/booking.service';
+import { BookingService, SendEmailDTO } from '../services/booking.service';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReturnStatus } from '../dto/return.booking.dto';
 
@@ -94,9 +94,11 @@ export class BookingController {
       );
     }
   }
-
   @Put(':id/approve')
-  async approveBooking(@Param('id') booking_id: string): Promise<Booking> {
-    return this.bookingService.approveBooking(booking_id);
+  async approveBooking(
+    @Param('id') booking_id: string,
+    @Body() dto: SendEmailDTO,
+  ): Promise<Booking> {
+    return this.bookingService.approveBooking(booking_id, dto);
   }
 }

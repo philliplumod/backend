@@ -15,6 +15,13 @@ import { HttpService } from '@nestjs/axios';
 
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
+
+export type SendEmailDTO = {
+  sender?: string | Address;
+  recipient: Address[];
+  subject: string;
+};
 
 @Injectable()
 export class BookingService {
@@ -28,6 +35,38 @@ export class BookingService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
   ) {}
+  async approveBooking(
+    booking_id: string,
+    dto: SendEmailDTO,
+  ): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    const { sender, subject, recipient = [] } = dto;
+    const finalRecipient =
+      recipient.length > 0
+        ? recipient
+        : [{ name: booking.user.first_name, address: booking.user.email }];
+
+    await this.mailerService.sendMail({
+      from: sender || this.configService.get<string>('MAIL_FROM'),
+      to: finalRecipient,
+      subject: subject || 'Booking Approved',
+      text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been approved.`,
+    });
+
+    booking.is_rent = true;
+
+    await this.bookingRepository.save(booking);
+
+    return booking;
+  }
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
     try {
@@ -131,21 +170,5 @@ export class BookingService {
 
       relations: ['motor', 'user'],
     });
-  }
-  async approveBooking(booking_id: string): Promise<Booking> {
-    const booking = await this.bookingRepository.findOne({
-      where: { booking_id },
-      relations: ['motor', 'user'],
-    });
-
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
-
-    booking.is_rent = true;
-
-    await this.bookingRepository.save(booking);
-
-    return booking;
   }
 }

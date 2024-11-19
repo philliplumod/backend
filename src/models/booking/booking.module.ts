@@ -5,10 +5,8 @@ import { Motor } from '../motor/entities/motor.entity';
 import { User } from '../user/entities/user.entity';
 import { Booking } from './entities/booking.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HttpModule } from '@nestjs/axios';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import { use } from 'passport';
 
 @Module({
   imports: [
@@ -19,7 +17,7 @@ import { use } from 'passport';
         transport: {
           host: configService.get<string>('MAIL_HOST'),
           port: configService.get('MAIL_PORT'),
-          secure: false,
+          secure: true,
           auth: {
             user: configService.get<string>('MAIL_USER'),
             pass: configService.get<string>('MAIL_PASSWORD'),
@@ -27,7 +25,7 @@ import { use } from 'passport';
         },
         defaults: {
           from: configService.get<string>('MAIL_SENDER'),
-        }
+        },
       }),
     }),
   ],
