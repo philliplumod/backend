@@ -144,6 +144,8 @@ export class BookingService {
 
     booking.is_rent = true;
 
+    await this.bookingRepository.save(booking);
+
     return booking;
   }
 }
