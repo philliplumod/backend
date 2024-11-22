@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Motor } from '../../motor/entities/motor.entity';
 import { User } from '../../user/entities/user.entity';
 import { BookingDto } from '../dto/booking.dto';
@@ -125,38 +125,44 @@ export class BookingService {
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
     try {
-      const motor = await this.motorRepository.findOne({
-        where: { motor_id: bookingDto.motor_id },
-      });
-      if (!motor) {
-        throw new NotFoundException('Motor not found');
-      }
+        const motor = await this.motorRepository.findOne({
+            where: { motor_id: bookingDto.motor_id },
+        });
+        if (!motor) {
+            throw new NotFoundException('Motor not found');
+        }
 
-      const user = await this.userRepository.findOne({
-        where: { user_id: bookingDto.user_id },
-      });
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+        const user = await this.userRepository.findOne({
+            where: { user_id: bookingDto.user_id },
+        });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
 
-      const createBooking = this.bookingRepository.create({
-        ...bookingDto,
-        motor,
-        user,
-        is_rent: false,
-        is_decline: false,
-        is_approve: false,
-        booking_status: 'Pending',
-      });
-      return await this.bookingRepository.save(createBooking);
+        const validPaymentMethods = ['cash', 'over-the-counter'];
+        const paymentMethod = validPaymentMethods.includes(bookingDto.payment_method)
+            ? bookingDto.payment_method
+            : 'cash';
+
+        const createBooking = this.bookingRepository.create({
+            ...bookingDto,
+            motor,
+            user,
+            is_rent: false,
+            is_decline: false,
+            is_approve: false,
+            booking_status: 'Pending',
+            payment_method: paymentMethod,
+        });
+        return await this.bookingRepository.save(createBooking);
     } catch (error) {
-      console.error('Booking creation error:', error);
-      throw new HttpException(
-        'Error creating booking',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+        console.error('Booking creation error:', error);
+        throw new HttpException(
+            'Error creating booking',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+        );
     }
-  }
+}
 
   async getAllBookings(): Promise<Booking[]> {
     const bookings = await this.bookingRepository.find({
@@ -228,5 +234,62 @@ export class BookingService {
 
       relations: ['motor', 'user'],
     });
+  }
+  async getSalesReport(): Promise<any> {
+    const today = new Date();
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    const startOfWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - today.getDay(),
+    );
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const rentalsToday = await this.bookingRepository.count({
+      where: {
+        created_at: Between(startOfDay, today),
+        is_rent: true,
+      },
+    });
+
+    const rentalsThisWeek = await this.bookingRepository.count({
+      where: {
+        created_at: Between(startOfWeek, today),
+        is_rent: true,
+      },
+    });
+
+    const rentalsThisMonth = await this.bookingRepository.count({
+      where: {
+        created_at: Between(startOfMonth, today),
+        is_rent: true,
+      },
+    });
+
+    const cashPaymentsToday = await this.bookingRepository.count({
+      where: {
+        created_at: Between(startOfDay, today),
+        payment_method: 'cash',
+      },
+    });
+
+    const overTheCounterPaymentsToday = await this.bookingRepository.count({
+      where: {
+        created_at: Between(startOfDay, today),
+        payment_method: 'over-the-counter',
+      },
+    });
+
+    return {
+      rentalsToday,
+      rentalsThisWeek,
+      rentalsThisMonth,
+      cashPaymentsToday,
+      overTheCounterPaymentsToday,
+    };
   }
 }

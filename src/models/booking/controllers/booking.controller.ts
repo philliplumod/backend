@@ -39,19 +39,6 @@ export class BookingController {
     }
   }
 
-  @Get(':id')
-  async getBookingById(@Param('id') id: string): Promise<Booking> {
-    try {
-      return this.bookingService.getBookingById(id);
-    } catch (error) {
-      console.error('Error in getBookingById:', error);
-      throw new HttpException(
-        error.message || 'Error fetching booking',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @Get()
   async getAllBookings(): Promise<Booking[]> {
     try {
@@ -115,9 +102,25 @@ export class BookingController {
   }
 
   @Put(':id/rent')
-  async isRent(
-    @Param('id') booking_id: string,
-  ): Promise<Booking> {
+  async isRent(@Param('id') booking_id: string): Promise<Booking> {
     return this.bookingService.isRent(booking_id);
+  }
+
+  @Get('sales-report')
+  async getSalesReport() {
+    return await this.bookingService.getSalesReport();
+  }
+
+  @Get(':id')
+  async getBookingById(@Param('id') id: string): Promise<Booking> {
+    try {
+      return this.bookingService.getBookingById(id);
+    } catch (error) {
+      console.error('Error in getBookingById:', error);
+      throw new HttpException(
+        error.message || 'Error fetching booking',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
