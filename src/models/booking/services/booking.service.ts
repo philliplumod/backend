@@ -125,44 +125,46 @@ export class BookingService {
 
   async createBooking(bookingDto: BookingDto): Promise<Booking> {
     try {
-        const motor = await this.motorRepository.findOne({
-            where: { motor_id: bookingDto.motor_id },
-        });
-        if (!motor) {
-            throw new NotFoundException('Motor not found');
-        }
+      const motor = await this.motorRepository.findOne({
+        where: { motor_id: bookingDto.motor_id },
+      });
+      if (!motor) {
+        throw new NotFoundException('Motor not found');
+      }
 
-        const user = await this.userRepository.findOne({
-            where: { user_id: bookingDto.user_id },
-        });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+      const user = await this.userRepository.findOne({
+        where: { user_id: bookingDto.user_id },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
 
-        const validPaymentMethods = ['cash', 'over-the-counter'];
-        const paymentMethod = validPaymentMethods.includes(bookingDto.payment_method)
-            ? bookingDto.payment_method
-            : 'cash';
+      const validPaymentMethods = ['cash', 'over-the-counter'];
+      const paymentMethod = validPaymentMethods.includes(
+        bookingDto.payment_method,
+      )
+        ? bookingDto.payment_method
+        : 'cash';
 
-        const createBooking = this.bookingRepository.create({
-            ...bookingDto,
-            motor,
-            user,
-            is_rent: false,
-            is_decline: false,
-            is_approve: false,
-            booking_status: 'Pending',
-            payment_method: paymentMethod,
-        });
-        return await this.bookingRepository.save(createBooking);
+      const createBooking = this.bookingRepository.create({
+        ...bookingDto,
+        motor,
+        user,
+        is_rent: false,
+        is_decline: false,
+        is_approve: false,
+        booking_status: 'Pending',
+        payment_method: paymentMethod,
+      });
+      return await this.bookingRepository.save(createBooking);
     } catch (error) {
-        console.error('Booking creation error:', error);
-        throw new HttpException(
-            'Error creating booking',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+      console.error('Booking creation error:', error);
+      throw new HttpException(
+        'Error creating booking',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-}
+  }
 
   async getAllBookings(): Promise<Booking[]> {
     const bookings = await this.bookingRepository.find({
@@ -248,6 +250,7 @@ export class BookingService {
       today.getDate() - today.getDay(),
     );
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
 
     const rentalsToday = await this.bookingRepository.count({
       where: {
@@ -274,6 +277,7 @@ export class BookingService {
       where: {
         created_at: Between(startOfDay, today),
         payment_method: 'cash',
+        is_rent: true,
       },
     });
 
@@ -281,8 +285,43 @@ export class BookingService {
       where: {
         created_at: Between(startOfDay, today),
         payment_method: 'over-the-counter',
+        is_rent: true,
       },
     });
+
+    const totalAmountTodayResult = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .select('SUM(booking.total_amount)', 'sum')
+      .where('booking.created_at BETWEEN :start AND :end', {
+        start: startOfDay,
+        end: today,
+      })
+      .andWhere('booking.is_rent = :is_rent', { is_rent: true })
+      .getRawOne();
+
+    const totalAmountMonthResult = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .select('SUM(booking.total_amount)', 'sum')
+      .where('booking.created_at BETWEEN :start AND :end', {
+        start: startOfMonth,
+        end: today,
+      })
+      .andWhere('booking.is_rent = :is_rent', { is_rent: true })
+      .getRawOne();
+
+    const totalAmountYearResult = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .select('SUM(booking.total_amount)', 'sum')
+      .where('booking.created_at BETWEEN :start AND :end', {
+        start: startOfYear,
+        end: today,
+      })
+      .andWhere('booking.is_rent = :is_rent', { is_rent: true })
+      .getRawOne();
+
+    const totalAmountToday = totalAmountTodayResult.sum || 0;
+    const totalAmountMonth = totalAmountMonthResult.sum || 0;
+    const totalAmountYear = totalAmountYearResult.sum || 0;
 
     return {
       rentalsToday,
@@ -290,6 +329,9 @@ export class BookingService {
       rentalsThisMonth,
       cashPaymentsToday,
       overTheCounterPaymentsToday,
+      totalAmountToday,
+      totalAmountMonth,
+      totalAmountYear,
     };
   }
 }
