@@ -19,6 +19,7 @@ import {
 } from '../services/booking.service';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReturnStatus } from '../dto/return.booking.dto';
+import { PaymentDto } from '../dto/date.payment.dto';
 
 @ApiTags('booking')
 @ApiBearerAuth()
@@ -99,6 +100,14 @@ export class BookingController {
     @Body() dto: SendEmailDTO,
   ): Promise<Booking> {
     return this.bookingService.declineBooking(booking_id, dto);
+  }
+
+  @Put(':id/date-of-payment')
+  async addPayment(
+    @Param('id') booking_id: string,
+    @Body() paymentDto: PaymentDto,
+  ): Promise<Booking> {
+    return this.bookingService.addPayment(booking_id, paymentDto);
   }
 
   @Put(':id/rent')

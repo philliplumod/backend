@@ -66,6 +66,9 @@ export class Booking {
   @Column()
   end_booking: string;
 
+  @Column({ default: '0000:00:00' })
+  date_of_payment: string;
+
   @Column({ default: false })
   is_rent: boolean;
 

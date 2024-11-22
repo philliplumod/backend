@@ -16,6 +16,7 @@ import { HttpService } from '@nestjs/axios';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
+import { PaymentDto } from '../dto/date.payment.dto';
 
 export type SendEmailDTO = {
   sender?: string | Address;
@@ -67,6 +68,7 @@ export class BookingService {
 
     booking.is_approve = true;
     booking.booking_status = 'Approved';
+    booking.date_of_payment = '0000:00:00';
 
     await this.bookingRepository.save(booking);
 
@@ -333,5 +335,27 @@ export class BookingService {
       totalAmountMonth,
       totalAmountYear,
     };
+  }
+
+  async addPayment(
+    booking_id: string,
+    paymentDto: PaymentDto,
+  ): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    booking.payment_method = paymentDto.payment_method;
+    booking.total_amount = paymentDto.total_amount;
+    booking.date_of_payment = paymentDto.date_of_payment;
+
+    await this.bookingRepository.save(booking);
+
+    return booking;
   }
 }
