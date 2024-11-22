@@ -66,6 +66,7 @@ export class BookingService {
     });
 
     booking.is_approve = true;
+    booking.booking_status = 'Approved';
 
     await this.bookingRepository.save(booking);
 
@@ -115,6 +116,7 @@ export class BookingService {
     });
 
     booking.is_decline = true;
+    booking.booking_status = 'Declined';
 
     await this.bookingRepository.save(booking);
 
@@ -144,6 +146,7 @@ export class BookingService {
         is_rent: false,
         is_decline: false,
         is_approve: false,
+        booking_status: 'Pending',
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {

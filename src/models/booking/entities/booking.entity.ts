@@ -21,7 +21,7 @@ export class Booking {
   @Column()
   return_date: string;
 
-  @Column()
+  @Column({ default: 'pending' })
   booking_status: string;
 
   @Column()
