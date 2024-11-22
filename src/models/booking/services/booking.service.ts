@@ -139,7 +139,7 @@ export class BookingService {
         throw new NotFoundException('User not found');
       }
 
-      const validPaymentMethods = ['cash', 'over-the-counter'];
+      const validPaymentMethods = ['cash', 'Gcash e-Wallet'];
       const paymentMethod = validPaymentMethods.includes(
         bookingDto.payment_method,
       )
@@ -281,10 +281,10 @@ export class BookingService {
       },
     });
 
-    const overTheCounterPaymentsToday = await this.bookingRepository.count({
+    const GcasheWalletPaymentsToday = await this.bookingRepository.count({
       where: {
         created_at: Between(startOfDay, today),
-        payment_method: 'over-the-counter',
+        payment_method: 'Gcash e-Wallet',
         is_rent: true,
       },
     });
@@ -328,7 +328,7 @@ export class BookingService {
       rentalsThisWeek,
       rentalsThisMonth,
       cashPaymentsToday,
-      overTheCounterPaymentsToday,
+      GcasheWalletPaymentsToday,
       totalAmountToday,
       totalAmountMonth,
       totalAmountYear,
