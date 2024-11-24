@@ -359,4 +359,19 @@ export class BookingService {
 
     return booking;
   }
+
+  async getPendingBookingsCount(): Promise<number> {
+    const count = await this.bookingRepository.count({
+      where: { booking_status: 'Pending' },
+    });
+
+    return count;
+  }
+  async getStatusRentTrue(): Promise<number> {
+    const count = await this.bookingRepository.count({
+      where: { is_rent: true },
+    });
+
+    return count;
+  }
 }

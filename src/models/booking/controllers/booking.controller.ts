@@ -120,6 +120,15 @@ export class BookingController {
     return await this.bookingService.getSalesReport();
   }
 
+  @Get('pending-bookings/count')
+  async getPendingBookingsCount(): Promise<number> {
+    return this.bookingService.getPendingBookingsCount();
+  }
+
+  @Get('is-rent-true/count')
+  async getStatusRentTrue(): Promise<number> {
+    return this.bookingService.getStatusRentTrue();
+  }
   @Get(':id')
   async getBookingById(@Param('id') id: string): Promise<Booking> {
     try {
