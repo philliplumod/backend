@@ -353,8 +353,9 @@ export class BookingService {
     booking.payment_method = paymentDto.payment_method;
     booking.total_amount = paymentDto.total_amount;
     booking.date_of_payment = paymentDto.date_of_payment;
+    booking.paid_status = 'PAID';
 
-    await this.bookingRepository.save({ booking, paid_status: 'PAID' });
+    await this.bookingRepository.save(booking);
 
     return booking;
   }
