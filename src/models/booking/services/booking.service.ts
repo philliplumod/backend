@@ -11,7 +11,6 @@ import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReturnStatus } from '../dto/return.booking.dto';
-import { HttpService } from '@nestjs/axios';
 
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
@@ -230,6 +229,8 @@ export class BookingService {
     if (returnStatus.return_status !== undefined) {
       book.return_status = returnStatus.return_status;
     }
+
+    book.rental_status = 'Completed';
 
     await this.bookingRepository.save(book);
 

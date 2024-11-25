@@ -40,7 +40,7 @@ export class UserService {
         throw new ConflictException('Email already exists');
       }
 
-      const hashedPassword = await hash(createUserDto.password, 10);
+        const hashedPassword = await hash(createUserDto.password, 10);
       const newUser = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword,

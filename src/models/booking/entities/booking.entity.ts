@@ -78,6 +78,9 @@ export class Booking {
   @Column({ default: false })
   is_approve: boolean;
 
+  @Column({ default: 'Active' })
+  rental_status: string;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;

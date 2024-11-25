@@ -77,6 +77,7 @@ export class BookingController {
       return await this.bookingService.updateReturnStatus(
         booking_id,
         returnStatus,
+        
       );
     } catch (error) {
       console.error('Error in updateReturnStatus:', error);

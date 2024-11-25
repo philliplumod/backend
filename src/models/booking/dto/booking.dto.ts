@@ -94,8 +94,6 @@ export class BookingDto {
   @IsDateString()
   end_booking: string;
 
-
-
   @ApiProperty()
   @IsOptional()
   @IsUUID()
