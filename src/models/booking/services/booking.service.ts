@@ -118,6 +118,7 @@ export class BookingService {
 
     booking.is_decline = true;
     booking.booking_status = 'Declined';
+    booking.return_status = 'Returned';
 
     await this.bookingRepository.save(booking);
 

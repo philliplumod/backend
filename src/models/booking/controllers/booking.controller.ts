@@ -4,20 +4,14 @@ import {
   Body,
   Get,
   Param,
-  UseGuards,
   HttpException,
   HttpStatus,
   Put,
-  Patch,
 } from '@nestjs/common';
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
-import {
-  BookingService,
-  RentStatus,
-  SendEmailDTO,
-} from '../services/booking.service';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BookingService, SendEmailDTO } from '../services/booking.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ReturnStatus } from '../dto/return.booking.dto';
 import { PaymentDto } from '../dto/date.payment.dto';
 
@@ -77,7 +71,6 @@ export class BookingController {
       return await this.bookingService.updateReturnStatus(
         booking_id,
         returnStatus,
-        
       );
     } catch (error) {
       console.error('Error in updateReturnStatus:', error);
