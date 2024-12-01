@@ -41,7 +41,17 @@ export class MotorController {
         'Failed to retrieve motors',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+      console.log(error);
     }
+  }
+
+  @Get('total-visible')
+  async getTotalVisibleMotors(): Promise<{ total: number }> {
+    return { total: await this.motorService.getTotalVisibleMotors() };
+  }
+  @Get('total-invisible')
+  async getTotalInvisibleMotors(): Promise<{ total: number }> {
+    return { total: await this.motorService.getTotalInvisibleMotors() };
   }
 
   @Get(':id')

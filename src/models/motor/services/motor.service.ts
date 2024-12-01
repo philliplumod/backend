@@ -139,4 +139,16 @@ export class MotorService {
 
     return motor;
   }
+  async getTotalVisibleMotors(): Promise<number> {
+    const count = await this.motorRepository.count({
+      where: { isVisible: true },
+    });
+    return count;
+  }
+  async getTotalInvisibleMotors(): Promise<number> {
+    const count = await this.motorRepository.count({
+      where: { isVisible: false },
+    });
+    return count;
+  }
 }
