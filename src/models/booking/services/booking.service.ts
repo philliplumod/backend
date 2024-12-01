@@ -376,4 +376,37 @@ export class BookingService {
 
     return count;
   }
+
+  async getPickupDateBookings(): Promise<
+    {
+      user: User;
+      pickup_date: Date;
+      is_decline: boolean;
+      return_status: string;
+    }[]
+  > {
+    const bookings = await this.bookingRepository.find({
+      where: { is_rent: true },
+      relations: ['user'],
+    });
+
+    const today = new Date();
+
+    return bookings.map((booking) => {
+      if (
+        new Date(booking.pickup_date).toDateString() !== today.toDateString()
+      ) {
+        booking.is_decline = true;
+        booking.return_status = 'Returned';
+        this.bookingRepository.save(booking);
+      }
+
+      return {
+        user: booking.user,
+        pickup_date: new Date(booking.pickup_date),
+        is_decline: booking.is_decline,
+        return_status: booking.return_status,
+      };
+    });
+  }
 }

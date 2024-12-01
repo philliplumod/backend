@@ -34,6 +34,15 @@ export class BookingController {
     }
   }
 
+  @Get('pickup-date-bookings')
+  async getPickupDateBookings(): Promise<Partial<Booking>[]> {
+    const bookings = await this.bookingService.getPickupDateBookings();
+    return bookings.map((b) => ({
+      ...b,
+      pickup_date: b.pickup_date.toISOString(),
+    }));
+  }
+
   @Get()
   async getAllBookings(): Promise<Booking[]> {
     try {
