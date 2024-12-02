@@ -85,7 +85,9 @@ export class BookingService {
     }
 
     booking.is_rent = true;
+    booking.motor.isVisible = false;
 
+    await this.motorRepository.save(booking.motor);
     await this.bookingRepository.save(booking);
 
     return booking;
