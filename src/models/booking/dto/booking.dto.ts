@@ -1,23 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsDateString,
   IsNotEmpty,
   IsUUID,
   IsNumber,
   IsOptional,
+  IsDate,
 } from 'class-validator';
 
 export class BookingDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsDateString()
-  pickup_date: string;
+  @IsDate()
+  pickup_date: Date;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsDateString()
-  return_date: string;
+  @IsDate()
+  return_date: Date;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -86,13 +86,13 @@ export class BookingDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
-  start_booking: string;
+  @IsDate()
+  start_booking: Date;
 
   @ApiProperty()
   @IsOptional()
-  @IsDateString()
-  end_booking: string;
+  @IsDate()
+  end_booking: Date;
 
   @ApiProperty()
   @IsOptional()

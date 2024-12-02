@@ -15,10 +15,10 @@ export class Booking {
   booking_id: string;
 
   @Column()
-  pickup_date: string;
+  pickup_date: Date;
 
   @Column()
-  return_date: string;
+  return_date: Date;
 
   @Column({ default: 'pending' })
   booking_status: string;
@@ -63,10 +63,10 @@ export class Booking {
   start_booking: string;
 
   @Column()
-  end_booking: string;
+  end_booking: Date;
 
   @Column({ default: '0000:00:00' })
-  date_of_payment: string;
+  date_of_payment: Date;
 
   @Column({ default: false })
   is_rent: boolean;

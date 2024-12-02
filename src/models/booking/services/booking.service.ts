@@ -67,7 +67,6 @@ export class BookingService {
 
     booking.is_approve = true;
     booking.booking_status = 'Approved';
-    booking.date_of_payment = '0000:00:00';
 
     await this.bookingRepository.save(booking);
 
@@ -159,6 +158,8 @@ export class BookingService {
         is_approve: false,
         booking_status: 'Pending',
         payment_method: paymentMethod,
+        start_booking: new Date(bookingDto.start_booking).toISOString(),
+        end_booking: new Date(bookingDto.end_booking).toISOString(),
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {
@@ -356,7 +357,6 @@ export class BookingService {
 
     booking.payment_method = paymentDto.payment_method;
     booking.total_amount = paymentDto.total_amount;
-    booking.date_of_payment = paymentDto.date_of_payment;
     booking.paid_status = 'PAID';
 
     await this.bookingRepository.save(booking);
@@ -405,7 +405,7 @@ export class BookingService {
 
       return {
         user: booking.user,
-        pickup_date: new Date(booking.pickup_date),
+        pickup_date: booking.pickup_date,
         is_decline: booking.is_decline,
         return_status: booking.return_status,
       };
