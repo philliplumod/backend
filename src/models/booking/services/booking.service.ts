@@ -158,8 +158,6 @@ export class BookingService {
         is_approve: false,
         booking_status: 'Pending',
         payment_method: paymentMethod,
-        start_booking: new Date(bookingDto.start_booking).toISOString(),
-        end_booking: new Date(bookingDto.end_booking).toISOString(),
       });
       return await this.bookingRepository.save(createBooking);
     } catch (error) {
