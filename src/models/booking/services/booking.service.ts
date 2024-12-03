@@ -150,7 +150,20 @@ export class BookingService {
         : 'cash';
 
       const createBooking = this.bookingRepository.create({
-        ...bookingDto,
+        pickup_date: bookingDto.pickup_date,
+        return_date: bookingDto.return_date,
+        free_helmet: bookingDto.free_helmet,
+        second_helmet: bookingDto.second_helmet,
+        phone_holder: bookingDto.phone_holder,
+        total_amount: bookingDto.total_amount,
+        days: bookingDto.days,
+        extra_storage: bookingDto.extra_storage,
+        start_booking: bookingDto.start_booking,
+        end_booking: bookingDto.end_booking,
+        reference_link: bookingDto.reference_link,
+        remark: bookingDto.remark,
+        paid_status: bookingDto.paid_status,
+        return_status: bookingDto.return_status,
         motor,
         user,
         is_rent: false,
