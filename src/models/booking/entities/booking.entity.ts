@@ -63,7 +63,7 @@ export class Booking {
   start_booking: string;
 
   @Column()
-  end_booking: Date;
+  end_booking: string;
 
   @Column({ default: '0000:00:00' })
   date_of_payment: Date;
