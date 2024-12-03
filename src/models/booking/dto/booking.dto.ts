@@ -86,13 +86,13 @@ export class BookingDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsDate()
-  start_booking: Date;
+  @IsString()
+  start_booking: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsDate()
-  end_booking: Date;
+  @IsString()
+  end_booking: string;
 
   @ApiProperty()
   @IsOptional()
