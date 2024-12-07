@@ -14,6 +14,7 @@ import { BookingService, SendEmailDTO } from '../services/booking.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ReturnStatus } from '../dto/return.booking.dto';
 import { PaymentDto } from '../dto/date.payment.dto';
+import { Notification } from '../dto/notifiction.interface';
 
 @ApiTags('booking')
 @ApiBearerAuth()
@@ -126,11 +127,28 @@ export class BookingController {
   async getPendingBookingsCount(): Promise<number> {
     return this.bookingService.getPendingBookingsCount();
   }
+  @Get('admin-notifications')
+  async getAdminNotifications(): Promise<Notification[]> {
+    try {
+      const notifications = await this.bookingService.getAdminNotifications();
+      return notifications;
+    } catch (error) {
+      if (error.message === 'No notifications found') {
+        return [];
+      }
+      console.error('Error in getAdminNotifications:', error);
+      throw new HttpException(
+        'Error fetching notifications',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @Get('is-rent-true/count')
   async getStatusRentTrue(): Promise<number> {
     return this.bookingService.getStatusRentTrue();
   }
+
   @Get(':id')
   async getBookingById(@Param('id') id: string): Promise<Booking> {
     try {

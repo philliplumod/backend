@@ -16,6 +16,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { PaymentDto } from '../dto/date.payment.dto';
+import { Notification } from '../dto/notifiction.interface';
 
 export type SendEmailDTO = {
   sender?: string | Address;
@@ -369,6 +370,44 @@ export class BookingService {
     });
 
     return count;
+  }
+
+  async getAdminNotifications(): Promise<Notification[]> {
+    const pendingBookings = await this.bookingRepository.find({
+      where: { booking_status: 'Pending' },
+      relations: ['motor', 'user'],
+    });
+
+    const now = new Date();
+    const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+    const returningMotors = await this.bookingRepository.find({
+      where: {
+        is_rent: true,
+        return_date: Between(now, twoHoursLater),
+      },
+      relations: ['motor', 'user'],
+    });
+
+    returningMotors.forEach((booking) => {
+      notifications.push({
+        type: 'return_due',
+        message: `Motor ${booking.motor.model} rented by ${booking.user.first_name} is due for return`,
+        booking_id: booking.booking_id,
+      });
+    });
+
+    const notifications: Notification[] = [];
+
+    pendingBookings.forEach((booking) => {
+      notifications.push({
+        type: 'pending_booking',
+        message: `Pending booking from ${booking.user.first_name} for ${booking.motor.model}`,
+        booking_id: booking.booking_id,
+      });
+    });
+
+    return notifications;
   }
   async getStatusRentTrue(): Promise<number> {
     const count = await this.bookingRepository.count({
