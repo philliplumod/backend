@@ -149,6 +149,11 @@ export class BookingController {
     return this.bookingService.getStatusRentTrue();
   }
 
+  @Get('apply-penalties')
+  async applyPenalties(): Promise<void> {
+    await this.bookingService.applyOverduePenaltiesAndNotify();
+  }
+
   @Get(':id')
   async getBookingById(@Param('id') id: string): Promise<Booking> {
     try {

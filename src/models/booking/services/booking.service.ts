@@ -31,6 +31,8 @@ export type RentStatus = {
 
 @Injectable()
 export class BookingService {
+  private readonly PENALTY_AMOUNT = 50;
+
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
@@ -413,6 +415,8 @@ export class BookingService {
   // CRON JOB APPROACH IT WILL AUTOMATICALLY RUN EVERY HOUR TO CHECK IF THE MOTOR IS OVERDUE AND APPLY PENALTY
   @Cron(CronExpression.EVERY_HOUR)
   async applyOverduePenaltiesAndNotify(): Promise<void> {
+    console.log('Cron job started');
+
     const bookings = await this.bookingRepository.find({
       relations: ['motor', 'user'],
     });
@@ -422,23 +426,30 @@ export class BookingService {
     for (const booking of bookings) {
       const returnTime = new Date(booking.return_date);
       const overdueDuration =
-        (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60); // in hours
+        (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60);
 
       if (overdueDuration > 3) {
-        booking.penalty = (booking.penalty || 0) + 50;
+        // Check if overdue by more than 1 minute
+        booking.penalty = (booking.penalty || 0) + this.PENALTY_AMOUNT;
         await this.bookingRepository.save(booking);
 
-        const totalAmount = booking.total_amount || 0;
         const penalty = booking.penalty || 0;
 
         await this.mailerService.sendMail({
           to: booking.user.email,
           subject: 'Payment and Penalty Notification',
-          text: `Hello ${booking.user.first_name},\n\nYour total payment amount is ₱${totalAmount} and a penalty of ₱${penalty} has been applied.\n\nThank you.`,
+          text: `Hello ${booking.user.first_name}, A penalty of ₱${penalty} has been applied due to an overdue return of a motorcycle. Thank you.`,
         });
+
+        console.log(
+          `Penalty applied and notification sent to ${booking.user.email}`,
+        );
       }
     }
+
+    console.log('Cron job finished');
   }
+
   async getStatusRentTrue(): Promise<number> {
     const count = await this.bookingRepository.count({
       where: { is_rent: true },

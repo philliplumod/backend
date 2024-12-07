@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { BlockModule } from './models/block/block.module';
 import { AppController } from './app.controller'; // Import AppController
 import { AppService } from './app.service'; // Import AppService
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AppService } from './app.service'; // Import AppService
     TypeOrmModule.forRoot({
       ...dataSourceOptions,
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     MotorModule,
     BookingModule,
