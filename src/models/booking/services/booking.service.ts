@@ -17,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { PaymentDto } from '../dto/date.payment.dto';
 import { Notification } from '../dto/notifiction.interface';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 export type SendEmailDTO = {
   sender?: string | Address;
@@ -86,7 +87,7 @@ export class BookingService {
     }
 
     booking.is_rent = true;
-    booking.motor.isVisible = false;
+    booking.motor.isVisible = true;
 
     await this.motorRepository.save(booking.motor);
     await this.bookingRepository.save(booking);
@@ -377,6 +378,7 @@ export class BookingService {
       where: { booking_status: 'Pending' },
       relations: ['motor', 'user'],
     });
+    const notifications: Notification[] = [];
 
     const now = new Date();
     const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
@@ -397,8 +399,6 @@ export class BookingService {
       });
     });
 
-    const notifications: Notification[] = [];
-
     pendingBookings.forEach((booking) => {
       notifications.push({
         type: 'pending_booking',
@@ -408,6 +408,36 @@ export class BookingService {
     });
 
     return notifications;
+  }
+
+  // CRON JOB APPROACH IT WILL AUTOMATICALLY RUN EVERY HOUR TO CHECK IF THE MOTOR IS OVERDUE AND APPLY PENALTY
+  @Cron(CronExpression.EVERY_HOUR)
+  async applyOverduePenaltiesAndNotify(): Promise<void> {
+    const bookings = await this.bookingRepository.find({
+      relations: ['motor', 'user'],
+    });
+
+    const now = new Date();
+
+    for (const booking of bookings) {
+      const returnTime = new Date(booking.return_date);
+      const overdueDuration =
+        (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60); // in hours
+
+      if (overdueDuration > 3) {
+        booking.penalty = (booking.penalty || 0) + 50;
+        await this.bookingRepository.save(booking);
+
+        const totalAmount = booking.total_amount || 0;
+        const penalty = booking.penalty || 0;
+
+        await this.mailerService.sendMail({
+          to: booking.user.email,
+          subject: 'Payment and Penalty Notification',
+          text: `Hello ${booking.user.first_name},\n\nYour total payment amount is ₱${totalAmount} and a penalty of ₱${penalty} has been applied.\n\nThank you.`,
+        });
+      }
+    }
   }
   async getStatusRentTrue(): Promise<number> {
     const count = await this.bookingRepository.count({

@@ -80,6 +80,9 @@ export class Booking {
   @Column({ default: 'Active' })
   rental_status: string;
 
+  @Column({ default: 0 })
+  penalty: number;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;
