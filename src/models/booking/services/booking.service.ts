@@ -67,6 +67,7 @@ export class BookingService {
 
     booking.is_approve = true;
     booking.booking_status = 'Approved';
+    booking.is_rent = true;
 
     await this.bookingRepository.save(booking);
 
