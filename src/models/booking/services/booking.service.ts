@@ -394,6 +394,22 @@ Motorcycle Rental
     return booking;
   }
 
+  async addPenalty(booking_id: string, penalty: number): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    booking.penalty = (booking.penalty || 0) + penalty;
+    await this.bookingRepository.save(booking);
+
+    return booking;
+  }
+
   async getPendingBookingsCount(): Promise<number> {
     const count = await this.bookingRepository.count({
       where: { booking_status: 'Pending' },
@@ -441,10 +457,11 @@ Motorcycle Rental
 
   // CRON JOB APPROACH IT WILL AUTOMATICALLY RUN EVERY HOUR TO CHECK IF THE MOTOR IS OVERDUE AND APPLY PENALTY
   @Cron(CronExpression.EVERY_HOUR)
-  async applyOverduePenaltiesAndNotify(): Promise<void> {
+  async checkOverdueBookings(): Promise<void> {
     console.log('Cron job started');
 
     const bookings = await this.bookingRepository.find({
+      where: { is_rent: true, return_status: 'Pending' },
       relations: ['motor', 'user'],
     });
 
@@ -452,36 +469,33 @@ Motorcycle Rental
 
     for (const booking of bookings) {
       const returnTime = new Date(booking.return_date);
-      const overdueDuration =
-        (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60);
 
-      if (overdueDuration > 3) {
-        booking.penalty = (booking.penalty || 0) + this.PENALTY_AMOUNT;
+      if (now > returnTime && booking.return_status !== 'Returned') {
+        const overdueHours =
+          (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60);
+        const penaltyToAdd = Math.floor(overdueHours) * this.PENALTY_AMOUNT;
+
+        booking.penalty = (booking.penalty || 0) + penaltyToAdd;
         await this.bookingRepository.save(booking);
-
-        const penalty = booking.penalty || 0;
 
         await this.mailerService.sendMail({
           to: booking.user.email,
-          subject: 'Late Return Penalty for Your Motorcycle Rental',
+          subject: 'Overdue Motorcycle Rental Notification',
           text: `Dear ${booking.user.first_name} ${booking.user.last_name},
 
-        We hope you're doing well. We noticed that your motorcycle was returned later than the agreed rental time. As a result, a late return fee has been added to your booking.
+We noticed that your motorcycle rental period has expired and the motorcycle has not been returned yet. As per our policy, a late return fee has been applied to your booking.
 
-        Here's how the penalty is calculated:
+Current Penalty Amount: Php ${booking.penalty}.
 
-        Late Fee: Php 50 per hour for up to 3 hours.
-        Additional Day Charge: If the delay exceeds 3 hours, it will be treated as an additional day's rental, and the charge for one extra day will be added.
+Please return the motorcycle as soon as possible to avoid additional charges.
 
-        The total penalty for your late return is Php ${penalty}. We kindly ask that you settle this as soon as possible.
+If you have any questions or need assistance, please contact us at 09638913583.
 
-        If you have any questions or concerns, please don't hesitate to reach out to us at 09638913583. We're here to help!
+Thank you for your cooperation.
 
-        Thank you for your cooperation.
-
-        Best regards,
-        Motorcycle Rental
-        `,
+Best regards,
+Motorcycle Rental
+          `,
         });
 
         console.log(

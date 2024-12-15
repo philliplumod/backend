@@ -113,6 +113,14 @@ export class BookingController {
     return this.bookingService.addPayment(booking_id, paymentDto);
   }
 
+  @Put(':id/penalty')
+  async addPenalty(
+    @Param('id') booking_id: string,
+    @Body() penalty: number,
+  ): Promise<Booking> {
+    return this.bookingService.addPenalty(booking_id, penalty);
+  }
+
   @Put(':id/rent')
   async isRent(@Param('id') booking_id: string): Promise<Booking> {
     return this.bookingService.isRent(booking_id);
@@ -151,7 +159,7 @@ export class BookingController {
 
   @Get('apply-penalties')
   async applyPenalties(): Promise<void> {
-    await this.bookingService.applyOverduePenaltiesAndNotify();
+    await this.bookingService.checkOverdueBookings();
   }
 
   @Get(':id')
