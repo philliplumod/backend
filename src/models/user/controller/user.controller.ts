@@ -50,6 +50,11 @@ export class AuthController {
     return this.userService.getAllUser();
   }
 
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string): Promise<void> {
+    await this.userService.forgotPassword(email);
+  }
+
   @Get(':id')
   async getUserById(
     @Param('id') id: string,
@@ -74,6 +79,7 @@ export class AuthController {
     await this.userService.restoreUser(id);
     return { message: 'User restored successfully' };
   }
+
   @Put('change-password/:id')
   async changePassword(
     @Param('id') id: string,
@@ -95,7 +101,7 @@ export class AuthController {
     await this.userService.updateUserRole(id, updateUserRoleDto.role);
     return { message: 'User role updated successfully' };
   }
-  @Put(':id/verify')  
+  @Put(':id/verify')
   async verifyUser(
     @Param('id') user_id: string,
     @Body() dto: SendEmailDTO,

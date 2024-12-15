@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/user.update.dto';
 import { Address } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { randomBytes } from 'crypto';
 
 export type SendEmailDTO = {
   sender?: string | Address;
@@ -31,6 +32,27 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // mag generate ug random na passowrd
+    const temporaryPassword = randomBytes(8).toString('hex');
+    user.password = await hash(temporaryPassword, 10);
+
+    await this.userRepository.save(user);
+
+    await this.mailerService.sendMail({
+      from: this.configService.get<string>('MAIL_FROM'),
+      to: user.email,
+      subject: 'Password Reset',
+      text: `Hello ${user.first_name}, your temporary password is ${temporaryPassword}. Please log in and change your password immediately.`,
+    });
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
       const existingUser = await this.userRepository.findOne({
@@ -40,7 +62,7 @@ export class UserService {
         throw new ConflictException('Email already exists');
       }
 
-        const hashedPassword = await hash(createUserDto.password, 10);
+      const hashedPassword = await hash(createUserDto.password, 10);
       const newUser = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword,
