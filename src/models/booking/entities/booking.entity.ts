@@ -83,6 +83,9 @@ export class Booking {
   @Column({ default: 0 })
   penalty: number;
 
+  @Column()
+  penalty_type: string;
+
   @ManyToOne(() => Motor, (motor) => motor.motor_id)
   @JoinColumn({ name: 'motor_id' })
   motor: Motor;

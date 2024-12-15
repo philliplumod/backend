@@ -13,7 +13,7 @@ import {
 import { SendEmailDTO, UserService } from '../user.service';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/user.create.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '../dto/user.update.dto';
 import { UpdatePasswordDto } from '../dto/user.change.pass.dto';
 import { UpdateUserRoleDto } from '../dto/user.update.role.dto';
@@ -51,6 +51,21 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com',
+        },
+      },
+      required: ['email'],
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Password reset email sent' })
   async forgotPassword(@Body('email') email: string): Promise<void> {
     await this.userService.forgotPassword(email);
   }
