@@ -65,8 +65,25 @@ export class BookingService {
     await this.mailerService.sendMail({
       from: sender || this.configService.get<string>('MAIL_FROM'),
       to: finalRecipient,
-      subject: subject || 'Booking Approved',
-      text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been approved.`,
+      subject: subject || 'Motorcycle Rental Booking Approved',
+      text: `Dear ${booking.user.first_name} ${booking.user.last_name},
+      
+    We are pleased to inform you that your motorcycle rental booking has been approved. Below are the details of your reservation:
+
+    Booking ID: ${booking.booking_id}
+    Rental Period: ${booking.pickup_date} to ${booking.return_date}
+    Motorcycle: ${booking.motor.model}
+    License Plate: ${booking.motor.plate_no}
+    Color: ${booking.motor.color}
+    Accessories: Helmet - ${booking.motor.helmet_price}, Storage - ${booking.motor.storage_price}
+
+    If you have any questions or need assistance, please feel free to contact us at 09638913583.
+
+    Thank you for choosing us!
+
+    Best regards,
+    Motorcycle Rental
+    `,
     });
 
     booking.is_approve = true;
@@ -118,8 +135,18 @@ export class BookingService {
     await this.mailerService.sendMail({
       from: sender || this.configService.get<string>('MAIL_FROM'),
       to: finalRecipient,
-      subject: subject || 'Booking Declined',
-      text: `Hello ${booking.user.first_name}, your booking for the motorcycle ${booking.motor.model} has been declined.`,
+      subject: subject || 'Subject: Motorcycle Rental Booking Declined',
+      text: `Dear ${booking.user.first_name} ${booking.user.last_name},
+
+ We regret to inform you that your motorcycle rental booking has been declined. Unfortunately, we are unable to process your reservation at this time.
+
+If you have any questions or would like to discuss alternative options, please don't hesitate to contact us at 09638913583.
+
+We appreciate your understanding and hope to serve you in the future.
+
+Best regards,
+Motorcycle Rental
+      `,
     });
 
     booking.is_decline = true;
@@ -429,7 +456,6 @@ export class BookingService {
         (now.getTime() - returnTime.getTime()) / (1000 * 60 * 60);
 
       if (overdueDuration > 3) {
-        // Check if overdue by more than 1 minute
         booking.penalty = (booking.penalty || 0) + this.PENALTY_AMOUNT;
         await this.bookingRepository.save(booking);
 
@@ -437,8 +463,25 @@ export class BookingService {
 
         await this.mailerService.sendMail({
           to: booking.user.email,
-          subject: 'Payment and Penalty Notification',
-          text: `Hello ${booking.user.first_name}, A penalty of ₱${penalty} has been applied due to an overdue return of a motorcycle. Thank you.`,
+          subject: 'Late Return Penalty for Your Motorcycle Rental',
+          text: `Dear ${booking.user.first_name} ${booking.user.last_name},
+
+        We hope you're doing well. We noticed that your motorcycle was returned later than the agreed rental time. As a result, a late return fee has been added to your booking.
+
+        Here's how the penalty is calculated:
+
+        Late Fee: Php 50 per hour for up to 3 hours.
+        Additional Day Charge: If the delay exceeds 3 hours, it will be treated as an additional day's rental, and the charge for one extra day will be added.
+
+        The total penalty for your late return is Php ${penalty}. We kindly ask that you settle this as soon as possible.
+
+        If you have any questions or concerns, please don't hesitate to reach out to us at 09638913583. We're here to help!
+
+        Thank you for your cooperation.
+
+        Best regards,
+        Motorcycle Rental
+        `,
         });
 
         console.log(
