@@ -394,22 +394,6 @@ Motorcycle Rental
     return booking;
   }
 
-  async addPenalty(booking_id: string, penalty: number): Promise<Booking> {
-    const booking = await this.bookingRepository.findOne({
-      where: { booking_id },
-      relations: ['motor', 'user'],
-    });
-
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
-
-    booking.penalty = (booking.penalty || 0) + penalty;
-    await this.bookingRepository.save(booking);
-
-    return booking;
-  }
-
   async getPendingBookingsCount(): Promise<number> {
     const count = await this.bookingRepository.count({
       where: { booking_status: 'Pending' },
