@@ -75,24 +75,6 @@ export class BookingController {
     }
   }
 
-  @Put(':id/add-penalty')
-  @ApiOperation({ summary: 'Add a penalty to a booking' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        penalty_type: {
-          type: 'string',
-          example: 'Overdue',
-        },
-        penalty_amount: {
-          type: 'number',
-          example: 50,
-        },
-      },
-      required: ['penalty_type', 'penalty_amount'],
-    },
-  })
   @Put('book/:booking_id')
   async updateBooking(
     @Param('booking_id') booking_id: string,
