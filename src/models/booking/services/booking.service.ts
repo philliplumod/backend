@@ -499,6 +499,27 @@ Motorcycle Rental
     return count;
   }
 
+  async addPenalty(
+    booking_id: string,
+    penalty_amount: number,
+    penalty_type: string,
+  ): Promise<Booking> {
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id },
+      relations: ['motor', 'user'],
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    booking.penalty = penalty_amount;
+    booking.penalty_type = penalty_type;
+
+    await this.bookingRepository.save(booking);
+
+    return booking;
+  }
   async getPickupDateBookings(): Promise<
     {
       user: User;

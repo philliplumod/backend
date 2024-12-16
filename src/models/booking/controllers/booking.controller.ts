@@ -11,10 +11,29 @@ import {
 import { BookingDto } from '../dto/booking.dto';
 import { Booking } from '../entities/booking.entity';
 import { BookingService, SendEmailDTO } from '../services/booking.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ReturnStatus } from '../dto/return.booking.dto';
 import { PaymentDto } from '../dto/date.payment.dto';
 import { Notification } from '../dto/notifiction.interface';
+class AddPenaltyDto {
+  @ApiProperty({
+    description: 'Type of the penalty',
+    example: 'Overdue',
+  })
+  penalty_type: string;
+
+  @ApiProperty({
+    description: 'Amount of the penalty',
+    example: 50,
+  })
+  penalty_amount: number;
+}
 
 @ApiTags('booking')
 @ApiBearerAuth()
@@ -56,6 +75,24 @@ export class BookingController {
     }
   }
 
+  @Put(':id/add-penalty')
+  @ApiOperation({ summary: 'Add a penalty to a booking' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        penalty_type: {
+          type: 'string',
+          example: 'Overdue',
+        },
+        penalty_amount: {
+          type: 'number',
+          example: 50,
+        },
+      },
+      required: ['penalty_type', 'penalty_amount'],
+    },
+  })
   @Put('book/:booking_id')
   async updateBooking(
     @Param('booking_id') booking_id: string,
@@ -111,6 +148,28 @@ export class BookingController {
     @Body() paymentDto: PaymentDto,
   ): Promise<Booking> {
     return this.bookingService.addPayment(booking_id, paymentDto);
+  }
+
+  @Put(':id/add-penalty')
+  @ApiOperation({ summary: 'Add a penalty to a booking' })
+  @ApiBody({ type: AddPenaltyDto })
+  async addPenalty(
+    @Param('id') booking_id: string,
+    @Body() addPenaltyDto: AddPenaltyDto,
+  ): Promise<Booking> {
+    try {
+      return await this.bookingService.addPenalty(
+        booking_id,
+        addPenaltyDto.penalty_amount,
+        addPenaltyDto.penalty_type,
+      );
+    } catch (error) {
+      console.error('Error in addPenalty:', error);
+      throw new HttpException(
+        error.message || 'Error adding penalty',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Put(':id/rent')

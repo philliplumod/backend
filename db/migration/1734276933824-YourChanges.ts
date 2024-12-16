@@ -14,7 +14,7 @@ export class YourChanges1734276933824 implements MigrationInterface {
       `ALTER TABLE "tbl_booking" ALTER COLUMN "penalty_type" SET NOT NULL`,
     );
     await queryRunner.query(
-      `ALTER TABLE "tbl_booking" ALTER COLUMN "date_of_payment" SET DEFAULT '0000:00:00'`,
+      `ALTER TABLE "tbl_booking" ALTER COLUMN "date_of_payment" SET DEFAULT '1970-01-01 00:00:00'`,
     );
   }
 
